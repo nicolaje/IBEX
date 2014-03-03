@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Printing Event Manager</title>
+    <meta name="robots" content="noindex" />
+    <base href="" />
+    <meta name="Generator" content="CMS Made Simple - Copyright (C) 2004-12 Ted Kulp. All rights reserved." />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <link rel="stylesheet" type="text/css" href="tmp/cache/stylesheet_combined_f3ac518552dc3b5ab25821359b60ddcb.css" media="print" />
+
+
+        <style type="text/css">
+    /*
+You can put css stuff here, which will be inserted in the header after calling the cmsms-stylesheets.
+Provided you don't remove the {$overridestylesheet} in PrintTemplate, of course.
+
+Any suggestions for default content in this stylesheet?
+
+Have fun!
+*/
+    </style>
+        
+  </head>
+  <body style="background-color: white; color: black; background-image: none; text-align: left;">	
+    <p>Events are a new powerful way of assigning actions to events. For example if you would like to send an email to the site administrator when a new file is uploaded or a new page is created by another user you could add some code to those events to be executed when that event happens.</p>
+<p>In brief here's how it works:</p>
+<p>a) A module, or the core, can register, and then Send Events such as "newNews", or "newFronteEndUser" or "fileUploaded", "editPage", etc, etc, etc. there's some 50 events in the core at the moment, and then uploads and frontend users have been configured to send events, We still have to do selfreg, etc, etc, etc.</p>
+<p>b) There are pages in the admin to allow you to specify which modules, and/or user tags should handle those events, and the order that each of those handlers should be called in.</p>
+<p>c) If one of the handlers of an event is a module, then.... the modules DoEvent method is called with the name of the event, and whatever data it wants to send. Each triggered event needs to be documented, but as of this moment, most are.</p>
+
+        
+    <script type="text/javascript">window.print();</script>
+  </body>
+</html>

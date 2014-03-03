@@ -1,0 +1,9 @@
+.code {font-family:'Courier New';background-color:lightgray;padding:5px 5px 5px 5px;margin:5px 5px 5px 5px;}
+.keyword {font-family:'Courier New'; color:blue; font-weight:bold}
+.txtcode {font-family:'Courier New'}
+.path {color:gray;}
+.comment {font-style:italic; padding-left:20px; color:green}
+.linecomment {font-style:italic; color:green}
+.minibex {font-family:'Courier New';background-color:lightyellow;padding:5px 5px 5px 5px;margin:5px 5px 5px 5px;}
+.formula {font-size:150%; padding:5px 5px 5px 5px;margin:5px 5px 5px 5px;}
+/* Stylesheet: My stylesheet Modified On 2013-01-07 16:55:44 */

@@ -1,0 +1,662 @@
+<!-- HTML header for doxygen 1.8.3.1-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.3.1"/>
+<title>IBEX: Modeling</title>
+<link href="http://www.emn.fr/z-info/ibex/uploads/doxy/tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="http://www.emn.fr/z-info/ibex/uploads/doxy/jquery.js"></script>
+<script type="text/javascript" src="http://www.emn.fr/z-info/ibex/uploads/doxy/dynsections.js"></script>
+<!!
+-->
+<link href="http://www.emn.fr/z-info/ibex/uploads/doxy/doxygen.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+function scroll(id) {
+        var offset = $(id).offset().top; 
+	$('html,body', window.parent.document).animate({scrollTop: offset}, 'fast');
+}
+</script>
+
+</head>
+<body>
+<div class="contents">
+<div><h3>Table of Contents</h3>
+<ul><li class="level1"><a href="modeling.html#mod-intro" onclick="scroll('#mod-intro')" target="_self">Introduction</a><ul><li class="level2"><a href="modeling.html#mod-into-cpp-vs-minibex" onclick="scroll('#mod-into-cpp-vs-minibex')">C++ versus Minibex</a></li>
+<li class="level2"><a href="modeling.html#mod-intro-mean" onclick="scroll('#mod-intro-mean')">What we mean by ``variable'' and ``function''</a></li>
+<li class="level2"><a href="modeling.html#mod-intro-arg-vs-var" onclick="scroll('#mod-intro-arg-vs-var')">Arguments versus variables</a></li>
+</ul>
+</li>
+<li class="level1"><a href="modeling.html#mod-func" onclick="scroll('#mod-func')">Functions</a><ul><li class="level2"><a href="modeling.html#mod-func-arg" onclick="scroll('#mod-func-arg')">Arguments</a><ul><li class="level3"><a href="modeling.html#mod-func-arg-dim" onclick="scroll('#mod-func-arg-dim')">Dimensions and ordering</a></li>
+<li class="level3"><a href="modeling.html#mod-func-arg-fiels" onclick="scroll('#mod-func-arg-fiels')">Class name and fields</a></li>
+<li class="level3"><a href="modeling.html#mod-func-arg-cpp" onclick="scroll('#mod-func-arg-cpp')">Creating arguments (in C++)</a></li>
+<li class="level3"><a href="modeling.html#mod-func-arg-vec-cpp" onclick="scroll('#mod-func-arg-vec-cpp')">Creating vector and matrix arguments (in C++)</a></li>
+<li class="level3"><a href="modeling.html#mod-func-arg-rename" onclick="scroll('#mod-func-arg-rename')">Renaming arguments</a></li>
+</ul>
+</li>
+<li class="level2"><a href="modeling.html#mod-func-op" onclick="scroll('#mod-func-op')">Operations</a><ul><li class="level3"><a href="modeling.html#mod-func-op-fwd" onclick="scroll('#mod-func-op-fwd')">Evaluation (forward computation)</a></li>
+<li class="level3"><a href="modeling.html#mod-func-op-bwd" onclick="scroll('#mod-func-op-bwd')">Backward</a></li>
+<li class="level3"><a href="modeling.html#mod-func-op-grad" onclick="scroll('#mod-func-op-grad')">Gradient</a></li>
+<li class="level3"><a href="modeling.html#mod-func-op-jac" onclick="scroll('#mod-func-op-jac')">Jacobian and Hansen's matrix</a></li>
+</ul>
+</li>
+<li class="level2"><a href="modeling.html#mod-func-cpp" onclick="scroll('#mod-func-cpp')">Creating functions (in C++)</a><ul><li class="level3"><a href="modeling.html#mod-func-cpp-renaming" onclick="scroll('#mod-func-cpp-renaming')">Renaming functions</a></li>
+<li class="level3"><a href="modeling.html#mod-func-cpp-symbols" onclick="scroll('#mod-func-cpp-symbols')">Allowed symbols</a></li>
+<li class="level3"><a href="modeling.html#mod-func-cpp-vecargs" onclick="scroll('#mod-func-cpp-vecargs')">Functions with vector arguments</a></li>
+<li class="level3"><a href="modeling.html#mod-func-cpp-compo" onclick="scroll('#mod-func-cpp-compo')">Composition</a></li>
+<li class="level3"><a href="modeling.html#mod-func-cpp-vecvalued" onclick="scroll('#mod-func-cpp-vecvalued')">Vector-valued functions</a></li>
+<li class="level3"><a href="modeling.html#mod-func-dag" onclick="scroll('#mod-func-dag')">Building DAGs (directed acyclic graphs)</a></li>
+</ul>
+</li>
+<li class="level2"><a href="modeling.html#mod-func-ex" onclick="scroll('#mod-func-ex')">Advanced examples</a><ul><li class="level3"><a href="modeling.html#mod-func-ex-iterated-sum" onclick="scroll('#mod-func-ex-iterated-sum')">Iterated sum</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="level1"><a href="modeling.html#mod-sys" onclick="scroll('#mod-sys')">Systems</a><ul><li class="level2"><a href="modeling.html#mod-sys-ctrs" onclick="scroll('#mod-sys-ctrs')">Constraints</a><ul><li class="level3"><a href="modeling.html#mod-sys-ctrs-fields" onclick="scroll('#mod-sys-ctrs-fields')">Class and Fields</a></li>
+<li class="level3"><a href="modeling.html#mod-sys-ctrs-cpp" onclick="scroll('#mod-sys-ctrs-cpp')">Creating constraints (in C++)</a></li>
+</ul>
+</li>
+<li class="level2"><a href="modeling.html#mod-sys-fields" onclick="scroll('#mod-sys-fields')">Systems fields</a></li>
+<li class="level2"><a href="modeling.html#mod-sys-transfo" onclick="scroll('#mod-sys-transfo')">Transformation</a><ul><li class="level3"><a href="modeling.html#mod-sys-transfo-copy" onclick="scroll('#mod-sys-transfo-copy')">Copy</a></li>
+<li class="level3"><a href="modeling.html#mod-sys-transfo-normalize" onclick="scroll('#mod-sys-transfo-normalize')">Normalization</a></li>
+<li class="level3"><a href="modeling.html#mod-sys-transfo-extend" onclick="scroll('#mod-sys-transfo-extend')">Transforming the goal into a constraint</a></li>
+<li class="level3"><a href="modeling.html#mod-sys-transfo-fritz-john" onclick="scroll('#mod-sys-transfo-fritz-john')">Fritz-John (Khun-Tucker) conditions</a></li>
+</ul>
+</li>
+<li class="level2"><a href="modeling.html#mod-sys-auxfunc" onclick="scroll('#mod-sys-auxfunc')">Auxiliary functions</a></li>
+<li class="level2"><a href="modeling.html#mod-sys-cpp" onclick="scroll('#mod-sys-cpp')">Creating systems (in C++)</a></li>
+</ul>
+</li>
+<li class="level1"><a href="modeling.html#mod-minibex" onclick="scroll('#mod-minibex')">The Minibex syntax</a><ul><li class="level2"><a href="modeling.html#mod-minibex-struct" onclick="scroll('#mod-minibex-struct')">Overall structure</a></li>
+<li class="level2"><a href="modeling.html#mod-minibex-reals" onclick="scroll('#mod-minibex-reals')">Real and Intervals</a></li>
+<li class="level2"><a href="modeling.html#mod-minibex-constants" onclick="scroll('#mod-minibex-constants')">Constants</a></li>
+<li class="level2"><a href="modeling.html#mod-minibex-func" onclick="scroll('#mod-minibex-func')">Functions</a></li>
+<li class="level2"><a href="modeling.html#mod-minibex-vars" onclick="scroll('#mod-minibex-vars')">Variables (or arguments)</a></li>
+<li class="level2"><a href="modeling.html#mod-minibex-ctrs" onclick="scroll('#mod-minibex-ctrs')">Constraints</a><ul><li class="level3"><a href="modeling.html#mod-minibex-ctrs-index" onclick="scroll('#mod-minibex-ctrs-index')">Indexing vector or matrix variables</a></li>
+<li class="level3"><a href="modeling.html#mod-minibex-ctrs-loop" onclick="scroll('#mod-minibex-ctrs-loop')">Loops</a></li>
+</ul>
+</li>
+<li class="level2"><a href="modeling.html#mod-minibex-cpp" onclick="scroll('#mod-minibex-cpp')">Some differences with C++</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="textblock"><h1><a class="anchor" id="mod-intro"></a>
+Introduction</h1>
+<p>The purpose of this chapter is to show how to create and manipulate objects corresponding to the mathematical concepts of <em>variable</em>, <em>function</em>, <em>constraint</em> and <em>system</em>.</p>
+<p>We talk about <em>modeling</em> as these objects mathematically model the concrete problem you are faced to.</p>
+<h2><a class="anchor" id="mod-into-cpp-vs-minibex"></a>
+C++ versus Minibex</h2>
+<p>There are two possible alternatives for modeling. You can either: </p>
+<ul>
+<li>
+write C++ code. Variables, functions, constraints and systems are C++ object that you declare yourself and build by calling the constructors of the corresponding classes </li>
+<li>
+write all these basic mathematic data in a text file, following the (very intuitive) Minibex syntax. All these data are loaded simultaneously and stored in a single <code>System</code> object. </li>
+</ul>
+<p>In both cases, you will access and use the data in the same way. For instance, you will calculate the interval derivative of a function by the same code, would it be created in your C++ program or loaded from a Minibex file.</p>
+<p>The chapter is organized as follows: we present each concept (variable, function, etc.) in turn and each time explain how objects are created in C++.</p>
+<p>All the Minibex syntax is given afterwards, in a separate <a class="el" href="modeling.html#mod-minibex" onclick="scroll('#mod-minibex')">section </a>.</p>
+<h2><a class="anchor" id="mod-intro-mean"></a>
+What we mean by ``variable'' and ``function''</h2>
+<p>Let us rule out a potential ambiguity.</p>
+<p>Since we are in the C++ programming language, the term <em>variable</em> and <em>function</em> already refers to something precise. For instance, the following piece of code introduces a <em>function</em> <code>sum</code> and a <em>variable</em> <code>x:</code> </p>
+<div class="fragment"><div class="line"><span class="keywordtype">int</span> sum(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y) &#123; </div>
+<div class="line">  <span class="keywordflow">return</span> x+y;</div>
+<div class="line">&#125;</div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> x=2;</div>
+</div><!-- fragment --><p> The variable <code>x</code> may represent, say, the balance of a bank account. The account number is what we call the <em>semantic</em> of <code>x</code>, that is, what <code>x</code> is supposed to represent in the user's mind. So, on one side, we have <em>what we write</em>, that is, a program with variables and functions, and on the other side, <em>what we represent</em>, that is, concepts like a bank account.</p>
+<p>With IBEX, we write programs to represent mathematical concepts that are also called <em>variables</em> and <em>functions</em>. The mapping <em>(x,y)&rarr;sin(x+y)</em> is an example of function that we want to represent. It shall not be confused with the function <code>sum</code> above.</p>
+<p>To avoid ambiguity, we shall talk about <em>mathematical</em> variables (resp. functions) versus <em>program</em> variables (resp. functions). We will also use italic symbol like <em>x</em> to denote a mathematical variable and postscript symbols like <code>x</code> for program variables. In most of our discussions, variables and functions will refer to the mathematical objects so that the mathematical meaning will be the implicit one.</p>
+<h2><a class="anchor" id="mod-intro-arg-vs-var"></a>
+Arguments versus variables</h2>
+<p>A (mathematical) variable does not necessarily represent a single real value. It can also be a vector, a matrix or an array-of-matrices. One can, e.g., build the following function </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[\begin&#123;array&#125;&#123;cccc&#125; f: &amp; \mathbb&#123;R&#125;^2\times\mathbb&#123;R&#125;^3 &amp; \to &amp; \mathbb&#123;R&#125;\\ &amp; (x,y) &amp; \mapsto &amp; x_1\times y_1+x_2\times y_2 - x_3 \end&#123;array&#125;.\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_1.png"/>
+</p>
+<p>In this case, <em>x</em> and <em>y</em> are vector variables with 2 and 3 components respectively.</p>
+<p>We see, at this point, that the term <em>variable</em> becomes ambiguous. For instance, if I say that the function <em>f</em> takes 2 variables, we don't really know if it means that the function takes two arguments (that might be vectors or matrices) or if the total input size is a vector of <img class="formulaInl" alt="$\mathbb&#123;R&#125;^2$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_2.png"/>.</p>
+<p>For this reason, from now on, we will call <b>argument</b> the formal parameters or input symbols the function has been defined with and <b>variable</b> a component of the latters.</p>
+<p>Hence, the function <em>f</em> in the previous paragraphs has two arguments, <em>x</em> and <em>y</em> and 5 variables <img class="formulaInl" alt="$x_1$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_3.png"/>, <img class="formulaInl" alt="$x_2$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_4.png"/>, <img class="formulaInl" alt="$y_1$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_5.png"/>, <img class="formulaInl" alt="$y_2$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_6.png"/> and <img class="formulaInl" alt="$y_3$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_7.png"/>.</p>
+<p>Note that, as a consequence, variables are always real-valued.</p>
+<h1><a class="anchor" id="mod-func"></a>
+Functions</h1>
+<p>Mathematical functions are represented by objects of the class <code>Function</code>.</p>
+<p>These objects are very easy to build. You can either build them in <a class="el" href="modeling.html#mod-func-cpp" onclick="scroll('#mod-func-cpp')">C++</a> or in <a class="el" href="modeling.html#mod-minibex" onclick="scroll('#mod-minibex')">Minibex </a>.</p>
+<h2><a class="anchor" id="mod-func-arg"></a>
+Arguments</h2>
+<p>Before telling you which class represents the arguments of a function, let us say first that this class does not play a big role. Indeed, the only purpose of declaring an argument <em>x</em> in IBEX is for building a function right after, like <em>f:x&rarr;x+1</em>. Functions play, in contrast, a big role.</p>
+<p>In other words, <em>x</em> is nothing but a syntaxic leaf in the expression of the function. In particular, an argument is not a slot for representing domain. E.g, if you want to calculate the range of <em>f</em> for <em>x</em> &isin; [0,1], you just call a (program) function <code>eval</code> with a plain box in argument. It's just as if <em>f</em> was the function that takes one argument and increment it, whatever the name of this argument is.</p>
+<p>Once <em>f</em> has been built, we can almost say that <em>x</em> is no longer useful. Arguments must be seen only as temporary objects, in the process of function construction.</p>
+<p>Before going on, let us slightly moderate this point. We have assumed here that, as a user of IBEX the operations you are interested in are: <em>evaluate</em> <em>f</em> on a box, calculate <em>f'</em> on a box, solve <em>f(x)=0</em> and so on. All these operations can be qualified as numerical: they take intervals and return intervals. You don't need to deal again with the expression of the function, once built. But if you need to handle, for any reason, the symbolic form of the function then you have to inspect the syntax and arguments appear again.</p>
+<h3><a class="anchor" id="mod-func-arg-dim"></a>
+Dimensions and ordering</h3>
+<p>We have said in the previous paragraph that an argument <em>x</em> can actually represent n variables <img class="formulaInl" alt="$x_1,\ldots,x_n$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_8.png"/>. So each argument has some associated information about its dimension(s).</p>
+<p>Let us consider again this function: </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[\begin&#123;array&#125;&#123;cccc&#125; f: &amp; \mathbb&#123;R&#125;^2\times\mathbb&#123;R&#125;^3 &amp; \to &amp; \mathbb&#123;R&#125;\\ &amp; (x,y) &amp; \mapsto &amp; x_1\times y_1+x_2\times y_2 - x_3 \end&#123;array&#125;.\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_1.png"/>
+</p>
+<p>From the user standpoint, the function <em>f</em> (once built) is "flattened" (or "serialized") to a mapping from <img class="formulaInl" alt="$\mathbb&#123;R&#125;^5$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_9.png"/> to <img class="formulaInl" alt="$\mathbb&#123;R&#125;$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_10.png"/>. Each C++ function (eval, etc.) expects a 5-dimensional box as parameter.</p>
+<p>The way intervals are mapped to the variables components follows a straightforward ordering: everytime we call a (program) function of <em>f</em> with the box <img class="formulaInl" alt="$[b]=([b]_1,\ldots,[b]_5)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_11.png"/> in argument, we simply enforce </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[x\in[b]_1\times[b]_2 \quad \mbox&#123;and&#125; \quad y\in[b]_3\times[b]_4\times[b]_5.\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_12.png"/>
+</p>
+<p>If you don't want to create functions in C++, you can move now to <a class="el" href="modeling.html#mod-func-op" onclick="scroll('#mod-func-op')">function operations </a>.</p>
+<h3><a class="anchor" id="mod-func-arg-fiels"></a>
+Class name and fields</h3>
+<p>As we have just said, arguments are just symbols in expression. For this reason, they are represented by a class named <code>ExprSymbol</code>. In fact, there is also another class we introduced for convenience, called <code>Variable</code>. It is, of course, a very confusing name from the programer's viewpoint since a <code>Variable</code> does actually not represent <a class="el" href="modeling.html#mod-intro-arg-vs-var" onclick="scroll('#mod-intro-arg-vs-var')">a <em>variable</em> but an <em>argument</em> </a>. However, from the user's viewpoint, this distinction is not visible and "variable" is more meaningful than "arguments". Anyway, the programer never has to deal with a <code>Variable</code> object. Without going further into details, the <code>Variable</code> class must be seen as a kind of "macro" that generates <code>ExprSymbol</code> objects. This macro is only useful if you <a class="el" href="modeling.html#mod-func-arg-cpp" onclick="scroll('#mod-func-arg-cpp')">build arguments in C++ </a>.</p>
+<p>Once built, an argument is always typed <code>ExprSymbol</code>.</p>
+<p>If <code>x</code> is an <code>ExprSymbol</code> object, you can obtain the information about its dimensions via <code>x.dim</code>. The <code>dim</code> field is of type <code>Dim</code>, a class that simply contains 3 integers (one for each dimension, see the API for further details).</p>
+<p>Finally, an argument also has a name, that is only useful for displaying. It is a regular C string (<code>char*</code>) stored in the field <code>name</code>.</p>
+<h3><a class="anchor" id="mod-func-arg-cpp"></a>
+Creating arguments (in C++)</h3>
+<p>The following piece of code creates an argument <code>x</code> and prints it.</p>
+<div class="fragment"><div class="line">Variable x;</div>
+<div class="line">cout &lt;&lt; x &lt;&lt; endl;</div>
+</div><!-- fragment --><p>The first instruction creates a (program) variable <code>x</code>. It is initialized by default, since nothing is given here to the constructor. By default, the argument is real (or <em>scalar</em>), meaning it is not a vector nor a matrix. Furthermore, the argument has a name that is automatically generated. Of course, the name of the argument does not necessarily correspond to the name of the program variable. For instance, <code>x</code> is the name of a C++ variable but the corresponding argument is named <em>_x_0</em>. The second instruction prints the name of the argument on the standard output:</p>
+<div class="fragment"><div class="line">_x_0</div>
+</div><!-- fragment --><p>It is possible to rename arguments, see below.</p>
+<h3><a class="anchor" id="mod-func-arg-vec-cpp"></a>
+Creating vector and matrix arguments (in C++)</h3>
+<p>To create a n-dimensional vector argument, just give the number n as a parameter to the constructor:</p>
+<div class="fragment"><div class="line">Variable y(3);   <span class="comment">// creates a 3-dimensional vector</span></div>
+</div><!-- fragment --><p>To create a m&times;n matrix, give m (number of rows) and n (number of columns) as parameters:</p>
+<div class="fragment"><div class="line">Variable z(2,3);   <span class="comment">// creates a 2*3-dimensional matrix</span></div>
+</div><!-- fragment --><p>We can go like this up to 3 dimensional arrays:</p>
+<div class="fragment"><div class="line">Variable t(2,3,4);   <span class="comment">// creates a 2*3*4-dimensional array</span></div>
+</div><!-- fragment --><h3><a class="anchor" id="mod-func-arg-rename"></a>
+Renaming arguments</h3>
+<p>Usually, you don't really care about the names of arguments since you handle program variables in your code. However, if you want a more user-friendly display, you can specify the name of the argument as a last parameter to the constructor.</p>
+<p>In the following example, we create a scalar, a vector and a matrix argument each time with a chosen name.</p>
+<div class="fragment"><div class="line">Variable x(<span class="stringliteral">&quot;x&quot;</span>);     <span class="comment">// creates a real argument named &quot;x&quot;</span></div>
+<div class="line">Variable y(3,<span class="stringliteral">&quot;y&quot;</span>);   <span class="comment">// creates a vector argument named &quot;y&quot;</span></div>
+<div class="line">Variable z(2,3,<span class="stringliteral">&quot;z&quot;</span>); <span class="comment">// creates a matrix argument named &quot;z&quot;</span></div>
+<div class="line">cout &lt;&lt; x &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; y &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; z &lt;&lt; endl;</div>
+</div><!-- fragment --><p>Now, the display is: </p>
+<div class="fragment"><div class="line">x y z</div>
+</div><!-- fragment --><h2><a class="anchor" id="mod-func-op"></a>
+Operations</h2>
+<p>Various operations can be performed with a function. We detail below the main ones.</p>
+<h3><a class="anchor" id="mod-func-op-fwd"></a>
+Evaluation (forward computation)</h3>
+<p>See the <a href="tutorial.html#func-eval">tutorial</a>.</p>
+<h3><a class="anchor" id="mod-func-op-bwd"></a>
+Backward</h3>
+<p>One of the main feature of Ibex is the ability to <em>contract</em> a box representing the domain of a variable x with respect to the constraint that f(x) belongs to a restricted input range [y]. The range [y] can be any constant (real value, interval, inteval vector, etc.). Rigorously, given two intervals [x] and [y], the contraction gives a new interval [z] such that </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[ \forall x\in[x], \quad f(x)\in[y] \Longrightarrow x \in[z] \subseteq [x] \]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_13.png"/>
+</p>
+<p>One way to do this is by using the famous <em>forward-backward</em> (alias <code>HC4Revise</code>). It is quick since it runs in linear time w.r.t. the size of the constraint syntax and optimal when arguments have all one occurrence in this syntax. This algorithm does not return a new interval [z] but contract the input interval [x] which is therefore an input-output argument.</p>
+<p>In the following snippet we require the function sin(x+y) to take the value -1 (a degenerated interval). With an initial box (x,y)=[1,2],[3,4], we obtain the result that (x,y) must lie in the subdomain ([1, 1.7123] ; [3, 3.7124]).</p>
+<div class="fragment"><div class="line">  Variable x;</div>
+<div class="line">  Variable y;</div>
+<div class="line">  Function f(x,y,sin(x+y));</div>
+<div class="line"></div>
+<div class="line">  <span class="keywordtype">double</span> _box[2][2]=&#123;&#123;1,2&#125;,&#123;3,4&#125;&#125;;</div>
+<div class="line">  IntervalVector box(2,_box);</div>
+<div class="line"></div>
+<div class="line">  <span class="comment">/* the backward sets box to ([1, 1.7123] ; [3, 3.7124]) */</span></div>
+<div class="line">  f.backward(-1.0,box);</div>
+</div><!-- fragment --><p> One can indeed check that the resulting box is a consistent narrowing of the initial one.</p>
+<h3><a class="anchor" id="mod-func-op-grad"></a>
+Gradient</h3>
+<p>Consider <em>f:(x,y)&rarr; x&times;y</em>. The first and most simple way of calculating the gradient is: </p>
+<div class="fragment"><div class="line"><span class="keywordtype">double</span> init_xy[][2] = &#123; &#123;1,2&#125;, &#123;3,4&#125; &#125;;</div>
+<div class="line">IntervalVector box(2,init_xy);</div>
+<div class="line">cout &lt;&lt; <span class="stringliteral">&quot;gradient=&quot;</span> &lt;&lt; f.gradient(box) &lt;&lt; endl;</div>
+</div><!-- fragment --><p>Since <img class="formulaInl" alt="$\frac&#123;\partial&#123;f&#125;&#125;&#123;\partial&#123;x&#125;&#125;=y$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_14.png"/> and <img class="formulaInl" alt="$\frac&#123;\partial&#123;f&#125;&#125;&#123;\partial&#123;y&#125;&#125;=x$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_15.png"/> we get: </p>
+<pre class="fragment">gradient=([3,4] ; [1,2])
+</pre><p>In this first variant, the returned vector is a new object created each time the function is called. When we have to compute many times different values of the gradient for the same function, we can also build a vector once for all and ask the <code>gradient</code> to store the result in this slot:</p>
+<div class="fragment"><div class="line">IntervalVector g(4);</div>
+<div class="line">f.gradient(box,g);</div>
+<div class="line">cout &lt;&lt; <span class="stringliteral">&quot;gradient=&quot;</span> &lt;&lt; g &lt;&lt; endl;</div>
+</div><!-- fragment --><h3><a class="anchor" id="mod-func-op-jac"></a>
+Jacobian and Hansen's matrix</h3>
+<p>The interval Jacobian matrix of a function <img class="formulaInl" alt="$ f $" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_16.png"/> on a box <img class="formulaInl" alt="$[x]$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_17.png"/> is </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[J=\left(\begin&#123;array&#125;&#123;ccc&#125; \frac&#123;\partial&#123;f_1&#125;&#125;&#123;\partial&#123;x_1&#125;&#125;([x]) &amp; \ldots &amp; \frac&#123;\partial&#123;f_1&#125;&#125;&#123;\partial&#123;x_n&#125;&#125;([x])\\ \vdots \\ \frac&#123;\partial&#123;f_m&#125;&#125;&#123;\partial&#123;x_1&#125;&#125;([x]) &amp; \ldots &amp; \frac&#123;\partial&#123;f_m&#125;&#125;&#123;\partial&#123;x_n&#125;&#125;([x])\\ \end&#123;array&#125;\right)\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_18.png"/>
+</p>
+<p>The interval Jacobian matrix is obtained exactly as for the gradient. Just write: </p>
+<div class="fragment"><div class="line">f.jacobian(box)</div>
+</div><!-- fragment --><p> to get an <code>IntervalMatrix</code> containing an enclosure of the Jacobian matrix of <em>f</em> on the box in argument.</p>
+<p>There is also a variant where the matrix is passed as parameter (as for the gradient) in order to avoid allocating memory for the calculated matrix: </p>
+<div class="fragment"><div class="line">f.jacobian(box,J)</div>
+</div><!-- fragment --><p>You can also compute with IBEX the ``Hansen matrix''. This matrix is another <em>slope</em> matrix, thiner than the interval Jacobian (but slower to be calculated). It is, for example, used inside the interval Newton operator. The Hansen matrix corresponds to the following matrix, where <img class="formulaInl" alt="$(x_1,\ldots,x_n)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_19.png"/> denotes the midvector of <img class="formulaInl" alt="$[x]$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_17.png"/>.</p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[\left(\begin&#123;array&#125;&#123;cccc&#125; \frac&#123;\partial&#123;f_1&#125;&#125;&#123;\partial&#123;x_1&#125;&#125;([x]_1,x_2,\ldots,x_n) &amp; \frac&#123;\partial&#123;f_1&#125;&#125;&#123;\partial&#123;x_2&#125;&#125;([x]_1,[x]_2,\ldots,x_n) &amp; \ldots &amp; \frac&#123;\partial&#123;f_1&#125;&#125;&#123;\partial&#123;x_n&#125;&#125;([x]_1,[x]_2,\ldots,[x]_n) \\ \vdots &amp; \\ \frac&#123;\partial&#123;f_m&#125;&#125;&#123;\partial&#123;x_1&#125;&#125;([x]_1,x_2,\ldots,x_n) &amp; \frac&#123;\partial&#123;f_n&#125;&#125;&#123;\partial&#123;x_2&#125;&#125;([x]_1,[x]_2,\ldots,x_n) &amp; \ldots &amp; \frac&#123;\partial&#123;f_m&#125;&#125;&#123;\partial&#123;x_n&#125;&#125;([x]_1,[x]_2,\ldots,[x]_n) \\ \end&#123;array&#125;\right)\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_67.png"/>
+</p>
+<p>Here is an example: </p>
+<div class="fragment"><div class="line">  Variable x,y;</div>
+<div class="line">  Function f(x,y,Return(sqr(x)*y,sqr(y)*x));</div>
+<div class="line">  IntervalMatrix H(2,2);</div>
+<div class="line">  IntervalVector box(2,Interval(1,2));</div>
+<div class="line">  f.hansen_matrix(box,H);</div>
+<div class="line">  cout &lt;&lt; <span class="stringliteral">&quot;Hansen matrix:\n&quot;</span> &lt;&lt; H &lt;&lt; endl;</div>
+</div><!-- fragment --><p> The display is: </p>
+<pre class="fragment">Hansen matrix:
+(([3, 6] ; [1, 4])
+(&lt;2.25, 2.25&gt; ; [2, 8]))
+</pre><h2><a class="anchor" id="mod-func-cpp"></a>
+Creating functions (in C++)</h2>
+<p>The following piece of code creates the function <em>(x,y)&rarr; sin(x+y)</em>:</p>
+<div class="fragment"><div class="line">  Variable x(<span class="stringliteral">&quot;x&quot;</span>);</div>
+<div class="line">  Variable y(<span class="stringliteral">&quot;y&quot;</span>);</div>
+<div class="line">  Function f(x,y,sin(x+y)); <span class="comment">// create the function (x,y)-&gt;sin(x+y)</span></div>
+<div class="line">  cout &lt;&lt; f &lt;&lt; endl;</div>
+</div><!-- fragment --><p> The display is: </p>
+<div class="fragment"><div class="line">_f_0:(x,y)-&gt;sin((x+y))</div>
+</div><!-- fragment --><p> _f_0:(_x_0,_x_1)-&gt;sin((_x_0+_x_1))</p>
+<p>You can directly give up to 6 variables in argument of the <code>Function</code> constructor:</p>
+<div class="fragment"><div class="line">  Variable a,b,c,d,e,f;</div>
+<div class="line">  Function _f(a,b,c,d,e,f,a+b+c+d+e+f);</div>
+</div><!-- fragment --><p> If more than 6 variables are needed, you need to build an intermediate array for collecting the arguments. More precisely, this intermediate object is an <code>Array&lt;const ExprSymbol&gt;</code>. The usage is summarized below. In this example, we have 7 variables. But instead of creating the function </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[x\mapsto x_1+\ldots+x_7\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_22.png"/>
+</p>
+<p> with one argument (a vector with 7 components), we decide to create the function </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[(x_1,\ldots,x_7)\mapsto x_1+\ldots+x_7.\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_23.png"/>
+</p>
+<p> with 7 arguments (7 scalar variables). </p>
+<div class="fragment"><div class="line">Variable x[7]; <span class="comment">// not to be confused with x(7)</span></div>
+<div class="line">Array&lt;const ExprSymbol&gt; vars(7);</div>
+<div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i&lt;7; i++)</div>
+<div class="line">  vars.set_ref(i,x[i]);</div>
+<div class="line">Function f(vars, x[0]+x[1]+x[2]+x[3]+x[4]+x[5]+x[6]);</div>
+<div class="line">cout &lt;&lt; f &lt;&lt; endl;</div>
+</div><!-- fragment --><p>The display is: </p>
+<pre class="fragment">_f_1:(_x_0,_x_1,_x_2,_x_3,_x_4,_x_5,_x_6)-&gt;
+     ((((((_x_0+_x_1)+_x_2)+_x_3)+_x_4)+_x_5)+_x_6)
+</pre><h3><a class="anchor" id="mod-func-cpp-renaming"></a>
+Renaming functions</h3>
+<p>By default, function names are also generated. But you can also set your own function name, as the last parameter of the constructor: </p>
+<div class="fragment"><div class="line">Function f(x,y,sin(x+y),<span class="stringliteral">&quot;f&quot;</span>);</div>
+</div><!-- fragment --><h3><a class="anchor" id="mod-func-cpp-symbols"></a>
+Allowed symbols</h3>
+<p>The following symbols are allowed in expressions: </p>
+<pre class="fragment">sign, min, max,
+sqr, sqrt, exp, log, pow, 
+cos, sin, tan, acos, asin, atan,
+cosh, sinh, tanh, acosh, asinh, atanh
+atan2
+</pre><p>Power symbols <code>^</code> are not allowed. You must either use <code>pow(x,y)</code>, or simply <code>sqr(x)</code> for the square function.</p>
+<p>Here is an example of the distance function between (<code>xa</code>,<code>ya</code>) and (<code>xb</code>,<code>yb</code>):</p>
+<div class="fragment"><div class="line">  Variable xa,xb,ya,yb;</div>
+<div class="line">  Function dist(xa,xb,ya,yb, sqrt(sqr(xa-xb)+sqr(ya-yb)));</div>
+</div><!-- fragment --> <h3><a class="anchor" id="mod-func-cpp-vecargs"></a>
+Functions with vector arguments</h3>
+<p>If arguments are vectors, you can refer to the component of an argument using square brackets. Indices start by 0, following the convention of the C language.</p>
+<p>We rewrite here the previous distance function using 2-dimensional arguments <code>a</code> and <code>b</code> instead:</p>
+<div class="fragment"><div class="line">  Variable a(2);</div>
+<div class="line">  Variable b(2);</div>
+<div class="line">  Function dist(a,b,sqrt(sqr(a[0]-b[0])+sqr(a[1]-b[1])),<span class="stringliteral">&quot;dist&quot;</span>);</div>
+</div><!-- fragment --> <h3><a class="anchor" id="mod-func-cpp-compo"></a>
+Composition</h3>
+<p>You can compose functions. Each argument of the called function can be substitued by an argument of the calling function, a subexpression or a constant value.</p>
+<p>See the example in the <a href="tutorial.html#func-compo">tutorial</a>.</p>
+<h3><a class="anchor" id="mod-func-cpp-vecvalued"></a>
+Vector-valued functions</h3>
+<p>To define a vector-valued function, the <code>Return</code> keword allows you to list the function's components.</p>
+<p>See the example in the <a href="tutorial.html#func-vec-value">tutorial</a>.</p>
+<h3><a class="anchor" id="mod-func-dag"></a>
+Building DAGs (directed acyclic graphs)</h3>
+<p>You can create a DAG instead of an expression tree. This will result in a gain in performance. For that, you need to handle references of shared subexpressions with variables types <code>const</code> ExprNode&amp;.</p>
+<p>In the following example we create the function : </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[f:x\mapsto ((\cos(x)+1)^2, (\cos(x)+1)^3)\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_24.png"/>
+</p>
+<p> and we want the subexpression cos(x)+1 to be shared:</p>
+<div class="fragment"><div class="line">  Variable x;</div>
+<div class="line">  <span class="keyword">const</span> ExprNode&amp; e=cos(x)+1;</div>
+<div class="line">  Function f(x,Return(pow(e,2),pow(e,3)));</div>
+</div><!-- fragment --> <h2><a class="anchor" id="mod-func-ex"></a>
+Advanced examples</h2>
+<h3><a class="anchor" id="mod-func-ex-iterated-sum"></a>
+Iterated sum</h3>
+<p>Let us build a function that returns the sum of the square of <code>N</code> variables, where <code>N</code> is some constant.</p>
+<p>The only difficulty is that we cannot assign references in C++, so we need to use pointers to <code></code>(const ExprNode) instead:</p>
+<div class="fragment"><div class="line">  <span class="keywordtype">int</span> N=10;</div>
+<div class="line">  Variable x(N,<span class="stringliteral">&quot;x&quot;</span>);</div>
+<div class="line"></div>
+<div class="line">  <span class="keyword">const</span> ExprNode* e=&amp;(sqr(x[0]));</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=1; i&lt;N; i++)</div>
+<div class="line">          e = &amp; (*e + sqr(x[i]));</div>
+<div class="line"></div>
+<div class="line">  Function f(x,*e,<span class="stringliteral">&quot;f&quot;</span>);</div>
+<div class="line"></div>
+<div class="line">  cout &lt;&lt; f &lt;&lt; endl;</div>
+</div><!-- fragment --><p> The display is: </p>
+<pre class="fragment">f:(x)-&gt;(((((((((x[0]^2+x[1]^2)+x[2]^2)+x[3]^2)+x[4]^2)+x[5]^2)+x[6]^2)+x[7]^2)+x[8]^2)+x[9]^2)
+</pre><h1><a class="anchor" id="mod-sys"></a>
+Systems</h1>
+<p>A <em>system</em> in IBEX is a set of constraints (equalities or inequalities) with, optionnaly, a goal function to minimize and an initial domain for variables. It corresponds to the usual concept of system in mathematical programming. Here is an example of system:</p>
+<center> Minimize x+y<br/>
+ with x &isin;[-1,1], y&isin;[-1,1]<br/>
+ such that<br/>
+ x^2+y^2&lt;=1 and y&gt;=x^2.<br/>
+ </center><p>One is usually interested in solving the system while minimizing the criterion, if any.</p>
+<p>We first present how constraints are represented.</p>
+<h2><a class="anchor" id="mod-sys-ctrs"></a>
+Constraints</h2>
+<p>In this section, we do not present <em>constraints</em> in their full generality but <em>numerical constraints</em> (the ones you are the most likely interested in).</p>
+<p>A numerical constraint in IBEX is either a relation like <img class="formulaInl" alt="$f(x)<0$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_25.png"/>, <img class="formulaInl" alt="$f(x)\le0$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_26.png"/>, <img class="formulaInl" alt="$f(x)=0$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_27.png"/>, <img class="formulaInl" alt="$f(x)\ge0$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_28.png"/> or <img class="formulaInl" alt="$f(x)>0$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_29.png"/>, where <em>f</em> is a function as introduced in the previous section. If <em>f</em> is vector-valued, then 0 must be a vector.</p>
+<p>Surprisingly, constraints do not play an important role in IBEX. It sounds a little bit contraditory for a <em>constraint</em> programming library. The point is that IBEX is rather a <em>contractor</em> programming library meaning that we build, apply and compose contractors rather than constraints directly.</p>
+<p>As a programer, you may actually face two different situations.</p>
+<p>Either you indeed want to use a constraint as a contractor in which case you build a <code>Ctc</code> object with this constraint (the actual class depending on the algorithm you chose, as explained in <a class="el" href="tutorial.html#ctc">the tutorial</a> &ndash;by default, it is <code>HC4Revise&ndash;</code>). Either you need to do something else, say, like calculating the Jacobian matrix of the function <em>f</em>. In this case, you just need to get a reference to this function and call <code>jacobian</code>. In fact, all the information inherent to a constraint (except the comparison operator of course) is contained in the underlying function so that there is little specific code related to the constraint itself.</p>
+<p>For these reasons, the only operations you actually do with a constraint is either to read its field or wrap it into a contractor.</p>
+<h3><a class="anchor" id="mod-sys-ctrs-fields"></a>
+Class and Fields</h3>
+<p>The class for representing a numerical constraint is <code>NumConstraint</code>. The first field in this class is a reference to the function: </p>
+<div class="fragment"><div class="line">Function&amp; f;</div>
+</div><!-- fragment --><p>The second field is the comparison operator: </p>
+<div class="fragment"><div class="line">CmpOp op;</div>
+</div><!-- fragment --><p><code>CmpOp</code> is just an <code>enum</code> (integer) with the following values</p>
+<table class="doxtable">
+<tr>
+<td><code>LT</code> </td><td><img class="formulaInl" alt="$<$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_30.png"/> </td><td><code>LEQ</code> </td><td><img class="formulaInl" alt="$\le$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_31.png"/> </td></tr>
+<tr>
+<td><code>EQ</code> </td><td>=</td><td></td></tr>
+<tr>
+<td><code>GEQ</code> </td><td><img class="formulaInl" alt="$\ge$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_32.png"/> </td><td><code>GT</code> </td><td><img class="formulaInl" alt="$>$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_33.png"/> </td></tr>
+</table>
+<h3><a class="anchor" id="mod-sys-ctrs-cpp"></a>
+Creating constraints (in C++)</h3>
+<p>To create a numerical constraint, you can build the function <em>f</em> first and call the constructor of <code>NumConstraint</code> as in the following example.</p>
+<div class="fragment"><div class="line">Variable x;</div>
+<div class="line">Function f(x,x+1);</div>
+<div class="line">NumConstraint c(f,LEQ); <span class="comment">// the constraint x+1&lt;=0</span></div>
+</div><!-- fragment --><p>But you can also write directly: </p>
+<div class="fragment"><div class="line">Variable x;</div>
+<div class="line">NumConstraint c(x,x+1&lt;=0);</div>
+</div><!-- fragment --><p> which gives the same result. The only difference is that, in the second case, the object <code>c.f</code> is ``owned'' (and destroyed) by the constraint whereas in the first case, <code>c.f</code> is only a reference to <code>f</code>.</p>
+<p>Note that the constant 0 is automatically interpreted as a vector (resp. matrix), if the left-hand side expression is a vector (resp. matrix). However, it does not work for other constants: you have to build the constant with the proper dimension, e.g., </p>
+<div class="fragment"><div class="line">Variable x(2);</div>
+<div class="line">NumConstraint c(x,x=IntervalVector(2,1)); <span class="comment">// the constraint x=(1,1)</span></div>
+<div class="line">cout &lt;&lt; <span class="stringliteral">&quot;c=&quot;</span> &lt;&lt; c &lt;&lt; endl;</div>
+</div><!-- fragment --><p>The display is: </p>
+<pre class="fragment">c=(_x_0-([1,1] ; [1,1]))=0
+</pre><p>In case of several variables, the constructor of <code>NumConstraint</code> works as for functions. Up to 6 variables can be passed as arguments: </p>
+<div class="fragment"><div class="line">Variable a,b,c,d,e,f,g;</div>
+<div class="line">NumConstraint c(a,b,c,d,e,f,g,a+b+c+d+e+f+g&lt;=1);</div>
+</div><!-- fragment --><p>And if more variables are necessary, you need to build an <code>Array&lt;const ExprSymbol&gt;</code> first, like <a class="el" href="modeling.html#mod-func-cpp" onclick="scroll('#mod-func-cpp')">here </a>.</p>
+<h2><a class="anchor" id="mod-sys-fields"></a>
+Systems fields</h2>
+<p>A system is not as simple as a collection of <em>any</em> constraints because each constraint must exactly relates the same set of arguments. And this set must also coincide with that of the goal function. Many algorithms of IBEX are based on this assumption. This is why they requires a system as argument (and not just an array of constraints). This makes systems a central concept in IBEX.</p>
+<p>A system is an object of the <code>System</code> class. This object is made of several fields that are detailed below.</p>
+<ul>
+<li>
+<code>const int <code>nb_var</code></code>: the total number of variables or, in other words, the <em>size</em> of the problem. This number is basically the sum of all arguments' components. For instance, if one declares an argument <em>x</em> with 10 components and an argument <em>y</em> with 5, the value of this field will be 15.<br/>
+ </li>
+<li>
+<code>const int nb_ctr</code>: the number of constraints.<br/>
+ </li>
+<li>
+<code>Function* goal</code>: a pointer to the goal function. If there is no goal function, this pointer is <code>NULL</code>.<br/>
+ </li>
+<li>
+<code>Function f</code>: the (usually vector-valued) function representing the constraints. For instance, if one defines three constraints: <img class="formulaInl" alt="$x+y\leq0$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_34.png"/>, <img class="formulaInl" alt="$x-y=1$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_35.png"/> and <img class="formulaInl" alt="$x-y\geq0$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_36.png"/>, the function f will be <img class="formulaInl" alt="$(x,y)\mapsto (x+y,x-y-1,x-y)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_37.png"/>. Note that the constraints are automatically transformed so that the right side is 0 but, however, without changing the comparison sign. It is however possible to <a class="el" href="modeling.html#mod-sys-transfo-normalize" onclick="scroll('#mod-sys-transfo-normalize')">normalize</a> a system so that all inequalities are defined with the <img class="formulaInl" alt="$\le$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_31.png"/> sign (see ). </li>
+<li>
+<code>IntervalVector box</code>: when a system is <a class="el" href="modeling.html#mod-minibex" onclick="scroll('#mod-minibex')">loaded from a file </a>, a initial box can be specified. It is contained in this field. </li>
+<li>
+<code>Array&lt;NumConstraint&gt; ctrs</code>: the array of constraints. The <code>Array</code> class of IBEX can be used as a regular C array. </li>
+</ul>
+<h2><a class="anchor" id="mod-sys-transfo"></a>
+Transformation</h2>
+<p><b>(under construction)</b> </p>
+<h3><a class="anchor" id="mod-sys-transfo-copy"></a>
+Copy</h3>
+<p><b>(under construction)</b> </p>
+<h3><a class="anchor" id="mod-sys-transfo-normalize"></a>
+Normalization</h3>
+<p><b>(under construction)</b> </p>
+<h3><a class="anchor" id="mod-sys-transfo-extend"></a>
+Transforming the goal into a constraint</h3>
+<p><b>(under construction)</b> </p>
+<h3><a class="anchor" id="mod-sys-transfo-fritz-john"></a>
+Fritz-John (Khun-Tucker) conditions</h3>
+<p><b>(under construction)</b> </p>
+<h2><a class="anchor" id="mod-sys-auxfunc"></a>
+Auxiliary functions</h2>
+<p><b>(under construction)</b> </p>
+<h2><a class="anchor" id="mod-sys-cpp"></a>
+Creating systems (in C++)</h2>
+<p>The first alternative for creating a system is to do it programmatically, that is, directly in your C++ program. Creating a system in C++ resorts to a temporary object called a <em>system factory</em>. The task is done in a few simple steps: </p>
+<ul>
+<li>
+declare a new system factory (an object of <code>SystemFactory</code>) </li>
+<li>
+add arguments in the factory using <code>add_var</code>. </li>
+<li>
+(optional) add the expression of the goal function using <code>add_goal</code> </li>
+<li>
+add the constraints using <code>add_ctr</code> </li>
+<li>
+create the system simply by passing the factory to the constructor of <code>System</code> </li>
+</ul>
+<p>Here is an example:</p>
+<div class="fragment"><div class="line">Variable x,y;</div>
+<div class="line"></div>
+<div class="line">SystemFactory fac;</div>
+<div class="line">fac.add_var(x);</div>
+<div class="line">fac.add_var(y);</div>
+<div class="line">fac.add_goal(x+y);</div>
+<div class="line">fac.add_ctr(sqr(x)+sqr(y)&lt;=1);</div>
+<div class="line"></div>
+<div class="line">System sys(fac);</div>
+</div><!-- fragment --><p>If you compare the declaration of the constraint here with the examples given <a class="el" href="modeling.html#mod-sys-ctrs-cpp" onclick="scroll('#mod-sys-ctrs-cpp')">here</a>, you notice that we do not list here the arguments before writing <code>sqr(x)+sqr(y)&lt;=1</code>. The reason is simply that, as said above, the goal function and the constraints in a system share all the same list of arguments. This list is defined via <code>add_var</code> once for all.</p>
+<h1><a class="anchor" id="mod-minibex"></a>
+The Minibex syntax</h1>
+<p>Entering a system programmatically is usually not very convenient. You may prefer to separate the model of the problem from the algorithms you use to solve it. In this way, you can run the same program with different variants of your model without recompiling it each time.</p>
+<p>IBEX provides such possibility. You can directly load a system from a (plain text) input file.</p>
+<p>Here is a simple example. Copy-paste the text above in a file named, say, <code>problem.txt</code>. The syntax talks for itself:</p>
+<div class="minibex"><pre class="fragment">Variables
+  x,y;
+
+Minimize
+  x+y;
+
+Constraints
+  x^2+y^2&lt;=1;
+end
+</pre></div><p>Then, in your C++ program, just write:</p>
+<div class="fragment"><div class="line">System sys(<span class="stringliteral">&quot;problem.txt&quot;</span>);</div>
+</div><!-- fragment --><p>and the system you get is exactly the same as in the previous example.</p>
+<p>Next sections details the mini-language of these input files.</p>
+<h2><a class="anchor" id="mod-minibex-struct"></a>
+Overall structure</h2>
+<p>First of all, the input file is a sequence of declaration blocks that must respect the following order: </p>
+<ul>
+<li>
+(optional) constants </li>
+<li>
+variables </li>
+<li>
+(optional) auxiliary functions </li>
+<li>
+(optional) goal function </li>
+<li>
+constraints </li>
+</ul>
+<p>Next paragraph gives the basic format of numbers and intervals. The subsequent paragraphs detail each declaration blocks.</p>
+<h2><a class="anchor" id="mod-minibex-reals"></a>
+Real and Intervals</h2>
+<p>A real is represented with the usual English format, that is with a dot separating the integral from the decimal part, and, possibly, using scientific notation.</p>
+<p>Here are some valid examples of reals in the syntax: </p>
+<pre class="fragment">0
+3.14159
+-0.0001
+1.001e-10
++70.0000
+</pre><p>An interval are two reals separated by a comma and surrounded by square brackets. The special symbol <code>oo</code> (two consecutive "o") represents the infinity <img class="formulaInl" alt="$\infty$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_38.png"/>. Note that, even with infinity bounds, the brackets must be squared (and not parenthesis as it should be since the bound is open). Here are some examples:</p>
+<pre class="fragment">[0,1]
+[0,+oo]
+[-oo,oo]
+[1.01e-02,1.02e-02]
+</pre><h2><a class="anchor" id="mod-minibex-constants"></a>
+Constants</h2>
+<p>Constants are all defined in the same declaration block, started with the <code>Constants</code> keyword. A constant value can depends on other (previously defined) constants value. Example:</p>
+<div class="minibex"><pre class="fragment">Constants
+  pi=3.14159;
+  y=-1.0;
+  z=sin(pi*y);
+</pre></div><p>You can give a constant an interval enclosure rather than a single fixed value. This interval will be embedded in all subsequent computations. Following the previous example, we can give <code>pi</code> a valid enclosure as below. We just have to replace "=" by "in".</p>
+<div class="minibex"><pre class="fragment">Constants
+  pi in [3.14159,3.14160];
+  y=-1.0;
+  z=sin(pi*y);
+</pre></div><p>Constants can also be vectors, matrices or array of matrices. You need to specify the dimensions of the constant in square brackets. For instance <code>x</code> below is a column vector with 2 components, the first component is equal to 0 and the second to 1: </p>
+<div class="minibex"><pre class="fragment">Constants
+x[2] = (0; 1);
+</pre></div><p> Writing <code>x</code>[2] is equivalent to <code>x</code>[2][1] because a column vector is also a 2&times;1 matrix. A row vector is a 1&times;2 matrix so a row vector has to be declared as follows. On the right side, note that we use commas instead of periods: </p>
+<div class="minibex"><pre class="fragment">Constants
+x[1][2] = (0, 1);
+</pre></div><p><b>important</b> remark. The reason why the syntax for declaring row vectors differs here from Matlab is that a 2-sized row vector surrounded by brackets would conflict with an interval. So, do note confuse <code></code>[0,1] with <code></code>(0,1): </p>
+<ul>
+<li>
+<code></code>(0,1) is a 2-dimensional row vector of two reals, namely 0 and 1. This is <b>not</b> an open interval. </li>
+<li>
+<code></code>[0,1] is the 1-dimensional interval [0,1]. This is <b>not</b> a 2-dimensional row vector. </li>
+</ul>
+<p>Of course, you mix vector with intervals. For instance: <code></code>([-oo,0];[0,+oo]) is a column vector of 2 intervals, <img class="formulaInl" alt="$(-\infty,0]$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_39.png"/> and <img class="formulaInl" alt="$[0,+\infty)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_40.png"/>.</p>
+<p>Here is an example of matrix constant declaration: </p>
+<div class="minibex"><pre class="fragment">Constants
+M[3][2] = ((0 , 0) ; (0 , 1) ; (1 , 0));
+</pre></div><p> This will create the constant matrix <code>M</code> with 3 rows and 2 columns equal to </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[\left(\begin&#123;array&#125;&#123;cc&#125; 0 &amp; 0 \\ 0 &amp; 1 \\ 1 &amp; 0 \\ \end&#123;array&#125;\right)\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_41.png"/>
+</p>
+<p>You can also declare array of matrices: </p>
+<div class="minibex"><pre class="fragment">Constants
+ c[2][2][3]=(((0,1,2); (3,4,5)) ; ((6,7,8); (9,10,11)));
+</pre></div><p> It is possible to define up to three dimensional vectors, but not more.</p>
+<p>When all the components of a multi-dimensional constant share the same interval, you don't need to duplicate it on the right side. Here is an example of a 10&times;10 matrix where all components are [0,0]: </p>
+<div class="minibex"><pre class="fragment">Constants
+ c[10][10] in [0,0];
+</pre></div><p> Ibex intializes the 100 entries of the matrix <code>c</code> to <img class="formulaInl" alt="$[0,0]$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_42.png"/>.</p>
+<p>Finally, the following table summarizes the possibility for declaring constants through different examples.</p>
+<table class="doxtable">
+<tr>
+<td><code> x in [-oo,0]</code> </td><td>declares a constant <code>x</code> <img class="formulaInl" alt="$\in(-\infty,0]$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_43.png"/>  </td></tr>
+<tr>
+<td><code> x in [0,1]</code>  </td><td>declares an constant <code>x</code> &isin;[0,1]  </td></tr>
+<tr>
+<td><code> x in [0,0]</code>  </td><td>declares a constant <code>x</code> &isin;[0,0]  </td></tr>
+<tr>
+<td><code> x = 0</code>  </td><td>declares a real constant <code>x</code> equal to 0  </td></tr>
+<tr>
+<td><code> x = 100*sin(0.1)</code></td><td>declares a constant <code>x</code> equal to 100*sin(0.1)  </td></tr>
+<tr>
+<td><code> x[10] in [-oo,0]</code></td><td>declares a \10-sized constant vector <code>x</code>, with each component <code> x(i)</code> <img class="formulaInl" alt="$\in(-\infty,0]$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_43.png"/>  </td></tr>
+<tr>
+<td><code> x[2] in ([-oo,0];[0,+oo])</code> </td><td>declares a 2-sized constant vector <code>x</code> with <code> x(1)</code> <img class="formulaInl" alt="$\in(-\infty,0]$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_43.png"/> and <code> x(2) &isin; <img class="formulaInl" alt="$[0,+\infty)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_40.png"/>  </code></td></tr>
+<tr>
+<td><code><code> x[3][3] in<br/>
+ (([0,1],0,0); (0,[0,1],0); (0,0,[0,1]))</code>  </code>  </td><td>declares a constrant matrix <code>x</code> <img class="formulaInl" alt="$\in \left(\begin&#123;array&#125;&#123;ccc&#125; [0,1] &amp; 0 &amp; 0\\ 0 &amp; [0,1] &amp; 0\\ 0 &amp; 0 &amp; [0,1] \\ \end&#123;array&#125;\right)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_44.png"/>. </td></tr>
+<tr>
+<td><code> x[10][5] in [0,1]</code> </td><td>declares a matrix <code>x</code> with each entry <code> x(i,j)</code> &isin;[0,1]. </td></tr>
+<tr>
+<td><code> x[2][10][5] in [0,1]</code> </td><td>declares an array of two 10x5 matrices with each entry <code> x(i,j,k)</code> &isin;[0,1]. </td></tr>
+</table>
+<h2><a class="anchor" id="mod-minibex-func"></a>
+Functions</h2>
+<p>When the constraints involve the same expression repeatidly, it may be convenient for you to put this expression once for all in a separate auxiliary function and to call this function.</p>
+<p>Assume for instance that your constraints intensively use the following expression </p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[\sqrt&#123;(x_a-x_b)^2+(y_a-y_b)^2)&#125;\]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_45.png"/>
+</p>
+<p> where <img class="formulaInl" alt="$x_a,\ldots y_b$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_46.png"/> are various sub-expressions, like in: </p>
+<div class="minibex"><pre class="fragment">sqrt((xA-1.0)^2+(yA-1.0)^2&lt;=0;
+sqrt((xA-(xB+xC))^2+(yA-(yB+yC))^2=0;
+...
+</pre></div><p>You can declare the distance function as follows. </p>
+<div class="minibex"><pre class="fragment">function distance(xa,ya,xb,yb)
+ return sqrt((xa-xb)^2+(ya-yb)^2;
+end
+</pre></div><p>You will then be able to simplify the writing of constraints: </p>
+<div class="minibex"><pre class="fragment">distance(xA,1.0,yA,1.0)&lt;=0;
+distance(xA,xB+xC,yA,yB+yC)=0;
+...
+</pre></div><p>As you may expect, this will result in the creation of a <a class="el" href="modeling.html#mod-func" onclick="scroll('#mod-func')"><code>Function</code> </a> object that you can access from your C++ program via the <code>System</code> class. See <a class="el" href="modeling.html#mod-sys-auxfunc" onclick="scroll('#mod-sys-auxfunc')">auxiliary functions </a>.</p>
+<p>A function can return a single value, a vector or a matrix. Similarly, it can take real, vectors or matrix arguments. You can also write some minimal ``code'' inside the function before returning the final expression. assigning the final expression to the return variable. This code is however limited to be a sequence of assignments.</p>
+<p>Let us now illustrate all this with a more sophisticated example. We write below the function that calculates the rotation matrix from the three Euler angles, <img class="formulaInl" alt="$\phi$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_47.png"/>, <img class="formulaInl" alt="$\theta$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_48.png"/> and <img class="formulaInl" alt="$\psi$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_49.png"/> :</p>
+<p class="formulaDsp">
+<img class="formulaDsp" alt="\[R : (\phi,\psi,\theta) \mapsto \left(\begin&#123;array&#125;&#123;ccc&#125; \cos(\theta)\cos(\psi) &amp; -\cos(\phi)\sin(\psi)+\sin(\theta)\cos(\psi)\sin(\phi) &amp; \sin(\psi)\sin(\phi)+\sin(\theta)\cos(\psi)\cos(\phi)\\ \cos(\theta)\sin(\psi) &amp; \cos(\psi)\cos(\phi)+\sin(\theta)\sin(\psi)\sin(\phi) &amp; -\cos(\psi)\sin(\phi)+\sin(\theta)\cos(\phi)\sin(\psi)\\ -\sin(\theta) &amp; \cos(\theta)\sin(\phi) &amp; \cos(\theta)\cos(\phi); \end&#123;array&#125;\right) \]" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_50.png"/>
+</p>
+<p>As you can see, there are many occurrences of the same subexpression like <img class="formulaInl" alt="$\cos(\theta)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_51.png"/> so a good idea for both readibility and (actually) efficiency is to precalculate such pattern and put the result into an intermediate variable.</p>
+<p>Here is the way we propose to define this function:</p>
+<div class="minibex"><pre class="fragment">/* Computes the rotation matrix from the Euler angles: 
+   roll(phi), the pitch (theta) and the yaw (psi)  */
+function euler(phi,theta,psi)
+  cphi   = cos(phi);
+  sphi   = sin(phi);
+  ctheta = cos(theta);
+  stheta = sin(theta);
+  cpsi   = cos(psi);
+  spsi   = sin(psi);
+  
+  return 
+  ( (ctheta*cpsi, -cphi*spsi+stheta*cpsi*sphi, 
+                   spsi*sphi+stheta*cpsi*cphi) ; 
+    (ctheta*spsi, cpsi*cphi+stheta*spsi*sphi, 
+                 -cpsi*sphi+stheta*cphi*spsi) ;
+    (-stheta, ctheta*sphi, ctheta*cphi) );
+end
+</pre></div><p><b>Remark</b>. Introducing temporary variables like <code>cphi</code> amouts to build a DAG instead of a tree for the function expression. It is also possible (and easy) to <a class="el" href="modeling.html#mod-func-dag" onclick="scroll('#mod-func-dag')">build a DAG </a> when you directly create a <code>Function</code> object in C++.</p>
+<h2><a class="anchor" id="mod-minibex-vars"></a>
+Variables (or arguments)</h2>
+<p>Variables are defined exactly in the same fashion as <a class="el" href="modeling.html#mod-minibex-constants" onclick="scroll('#mod-minibex-constants')">constants</a>. It is possible to define up to three dimensional vectors, with an optional domain to initialize each component with. The following examples are valid:</p>
+<p><code> x[10][5][4];</code></p>
+<p><code> x[10][5][4] in [0,1];</code></p>
+<p>Whenever domains are not specified, they are set by default to <img class="formulaInl" alt="$(-\infty,+\infty)$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_52.png"/>.</p>
+<h2><a class="anchor" id="mod-minibex-ctrs"></a>
+Constraints</h2>
+<p>Constraints are simply written in sequence. The sequence starts with the keword <code>constraints</code> and terminates with the keyword <code>end</code>. They are a separated by semi-colon. Here is an example:</p>
+<div class="minibex"><pre class="fragment">Variables
+  x in [0,oo];
+Constraints
+  //you can use C++ comments
+  x+y&gt;=-1;
+  x-y&lt;=2;
+end
+</pre></div><h3><a class="anchor" id="mod-minibex-ctrs-index"></a>
+Indexing vector or matrix variables</h3>
+<p>Use parenthesis like in Matlab. Ex: </p>
+<div class="minibex"><pre class="fragment">Variables
+  x[10][10] in [0,oo];
+Constraints
+  x(1,1)=0;
+end
+</pre></div><h3><a class="anchor" id="mod-minibex-ctrs-loop"></a>
+Loops</h3>
+<p>You can resort to loops in a Matlab-like syntax to define constraints. Example:</p>
+<div class="minibex"><pre class="fragment">Variables
+  x[10];
+
+Constraints
+  for i=1:10;
+    x(i) &lt;= i;
+  end
+end
+</pre></div><h2><a class="anchor" id="mod-minibex-cpp"></a>
+Some differences with C++</h2>
+<ul>
+<li>
+Vectors indices are surrounded by parenthesis (not brackets), </li>
+<li>
+Indices start by 1 instead of 0, </li>
+<li>
+You can use the "^" symbol (instead of <code>sqr</code> or <code>pow</code>). </li>
+</ul>
+</div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.3.1-->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generated on Mon Jul 15 2013 14:45:35 for IBEX by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="http://www.emn.fr/z-info/ibex/uploads/doxy/doxygen.png" alt="doxygen"/>
+</a> 1.8.3.1
+</small></address>
+</body>
+</html>

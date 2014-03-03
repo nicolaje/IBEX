@@ -1,0 +1,448 @@
+<!-- HTML header for doxygen 1.8.3.1-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.3.1"/>
+<title>IBEX: A simple SLAM example with contractor programming</title>
+<link href="http://www.emn.fr/z-info/ibex/uploads/doxy/tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="http://www.emn.fr/z-info/ibex/uploads/doxy/jquery.js"></script>
+<script type="text/javascript" src="http://www.emn.fr/z-info/ibex/uploads/doxy/dynsections.js"></script>
+<!!
+-->
+<link href="http://www.emn.fr/z-info/ibex/uploads/doxy/doxygen.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+function scroll(id) {
+        var offset = $(id).offset().top; 
+	$('html,body', window.parent.document).animate({scrollTop: offset}, 'fast');
+}
+</script>
+
+</head>
+<body>
+<div class="contents">
+<div><h3>Table of Contents</h3>
+<ul><li class="level1"><a href="ex-ctc.html#intro" onclick="scroll('#intro')" target="_self">Introduction</a><ul><li class="level2"><a href="ex-ctc.html#intro-download" onclick="scroll('#intro-download')">Download</a></li>
+<li class="level2"><a href="ex-ctc.html#intro-prob-desc" onclick="scroll('#intro-prob-desc')">Problem description</a></li>
+</ul>
+</li>
+<li class="level1"><a href="ex-ctc.html#strat1" onclick="scroll('#strat1')">First strategy (no outlier)</a><ul><li class="level2"><a href="ex-ctc.html#strat1-eq" onclick="scroll('#strat1-eq')">Entering equations and functions</a></li>
+<li class="level2"><a href="ex-ctc.html#strat1-basic-ctc" onclick="scroll('#strat1-basic-ctc')">Creating basic contractors</a></li>
+<li class="level2"><a href="ex-ctc.html#strat1-comb" onclick="scroll('#strat1-comb')">Combining contractors</a></li>
+<li class="level2"><a href="ex-ctc.html#strat1-res" onclick="scroll('#strat1-res')">Result</a></li>
+</ul>
+</li>
+<li class="level1"><a href="ex-ctc.html#strat2" onclick="scroll('#strat2')">Second strategy (with outliers)</a><ul><li class="level2"><a href="ex-ctc.html#strat2-qinter" onclick="scroll('#strat2-qinter')">Q-intersection</a></li>
+<li class="level2"><a href="ex-ctc.html#strat2-inverse" onclick="scroll('#strat2-inverse')">Projection using the inverse contractor</a></li>
+</ul>
+</li>
+<li class="level1"><a href="ex-ctc.html#strat3" onclick="scroll('#strat3')">Third strategy (how can this scale?)</a><ul><li class="level2"><a href="ex-ctc.html#strat3-detect" onclick="scroll('#strat3-detect')">Detection contractor</a></li>
+<li class="level2"><a href="ex-ctc.html#strat3-speed" onclick="scroll('#strat3-speed')">Speed contractor</a></li>
+<li class="level2"><a href="ex-ctc.html#strat3-scan" onclick="scroll('#strat3-scan')">Scan contractor (q-intersection)</a></li>
+<li class="level2"><a href="ex-ctc.html#strat3-traj" onclick="scroll('#strat3-traj')">Trajectory</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="textblock"><h1><a class="anchor" id="intro"></a>
+Introduction</h1>
+<p>The goal of this example is to implement a simple contractor strategy for a SLAM problem with the IBEX library. SLAM means <em>simultaneous localization and map building</em> and is a classical problem in mobile robotics.</p>
+<p>We will see that contractor programmming with Ibex basically amounts to: </p>
+<ul>
+<li>
+enter your mathematical model using the <a href="modeling.html#mod-func">Function</a> and <a href="modeling.html#mod-sys-ctrs">NumConstraint</a> classes </li>
+<li>
+build basic contractors (<code>CtcFwdBwd</code> in general) with respect to the equations </li>
+<li>
+apply operators to these contractors to yield new (more sophisticated) contractors </li>
+</ul>
+<p>The code we build here will eventually involve 5 different contrators: </p>
+<ul>
+<li>
+<code>CtcFwdBwd</code> </li>
+<li>
+<code>CtcCompo</code> </li>
+<li>
+<code>CtcFixPoint</code> </li>
+<li>
+<code>CtcQInter</code> </li>
+<li>
+<code>CtcInverse</code>. </li>
+</ul>
+<p>We shall implement a strategy that is similar to a predictor-corrector approach (like the Kalman filter for instance) in the sense that we also use odometry and observation to reduce the uncertainty on the robot's position. However, both information as considered on the same footing and there is no distinction such as <em>prediction</em> versus <em>correction</em>. They are just contractors that can be used in any order and we will even calculate a fixpoint of them (so the strategy is not a <em>recursive</em> filter).</p>
+<dl class="section note"><dt>Note</dt><dd>For the sake of simplicity, we shall always use dynamic <em>allocation</em>: <div class="fragment"><div class="line">MyClass* x = <span class="keyword">new</span> MyClass(...)</div>
+</div><!-- fragment --> just to avoid potential memory fault when pointing to temporary objects. Of course, all these objects should be disallocated afterwards.</dd></dl>
+<h2><a class="anchor" id="intro-download"></a>
+Download</h2>
+<p><a href="http://www.emn.fr/z-info/ibex/uploads/doc/slam.tar.gz">Download the full code</a>.</p>
+<h2><a class="anchor" id="intro-prob-desc"></a>
+Problem description</h2>
+<p>The goal is to charaterize the trajectory of an autonomous robot by enclosing in a box its position x[t] for each time step t=0...T.</p>
+<center> <div class="image">
+<img src="http://www.emn.fr/z-info/ibex/uploads/doxy/loc.png" alt="loc.png"/>
+<div class="caption">
+SLAM</div></div>
+</center><p>We have no direct information on its position (including the initial one) but the robot measures at each time step: </p>
+<ul>
+<li>
+its distance from a set of N fixed beacons (&rarr; N measurements) as if it was equipped with a telemeter; </li>
+<li>
+its "speed" (delta) vector v[t]=x[t+1]-x[t]. </li>
+</ul>
+<p>Each measurement is subject to uncertainty: <em>distances and speed vector</em> but also the position of the beacons, that is supposed to be measured a priori.</p>
+<p>Furthermore, we shall consider outliers.</p>
+<p>First of all, let us assume that the measurements are all simulated in a seperate unit. The header file of this unit contains:</p>
+<div class="fragment"><div class="line"><span class="comment">/*================================ data ==================================*/</span></div>
+<div class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> N;               <span class="comment">// number of beacons</span></div>
+<div class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> T;               <span class="comment">// number of time steps</span></div>
+<div class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">double</span> L;            <span class="comment">// limit of the environment (the</span></div>
+<div class="line">                                  <span class="comment">// robot is in the area [0,L]x[0,L])</span></div>
+<div class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">int</span> NB_OUTLIERS;     <span class="comment">// maximal number of outliers per</span></div>
+<div class="line">                                  <span class="comment">// time units</span></div>
+<div class="line"><span class="keyword">extern</span> IntervalMatrix beacons;    <span class="comment">// (a Nx2 matrix) beacons[i] is the</span></div>
+<div class="line">                                  <span class="comment">// position (x,y) of the ith beacon</span></div>
+<div class="line"></div>
+<div class="line"><span class="keyword">extern</span> IntervalMatrix d;          <span class="comment">// (a TxN matrix) d[t][i]=distance</span></div>
+<div class="line">                                  <span class="comment">// between x[t] and the ith beacon</span></div>
+<div class="line"></div>
+<div class="line"><span class="keyword">extern</span> IntervalMatrix v;          <span class="comment">// (a Tx2 matrix) v[t] is the delta</span></div>
+<div class="line">                                  <span class="comment">// vector between x[t+1] and x[t].</span></div>
+<div class="line"><span class="comment">/*========================================================================*/</span></div>
+</div><!-- fragment --> <h1><a class="anchor" id="strat1"></a>
+First strategy (no outlier)</h1>
+<p>First, we consider no outlier. A simple strategy consists in : </p>
+<ul>
+<li>
+creating a contractor for each measurement, </li>
+<li>
+calling all these contractors in sequence (composition) </li>
+<li>
+performing a fixpoint loop </li>
+</ul>
+<p>Let us start by creating contractors for measurements, that is, those related to equations.</p>
+<h2><a class="anchor" id="strat1-eq"></a>
+Entering equations and functions</h2>
+<p>A measurement is an equation.</p>
+<p>To enter an equation in Ibex, we use the <a href="modeling.html#mod-sys-ctrs"><code>NumConstraint</code> class</a>. A <code>NumConstraint</code> object contains a mathematical condition, or <code>constraint</code>.</p>
+<p>To define a constraint mathematically, we must specify how many variables it relates and in which order these variables must be taken.</p>
+<p>That is why we need to create first some <code>Variable</code> objects. But keep in mind that these objects are just a C++ trick for the only purpose of declaring a constraint.</p>
+<p>Once declared, a constraint is self-contained and depends on nothing else.</p>
+<p><em>Example</em> For creating the equations:</p>
+<center> forall t&lt;T, x[t+1]-x[t]=v[t] </center><p>The corresponding code in Ibex is: </p>
+<div class="fragment"><div class="line">Variable x(T,2);  <span class="comment">// create a Tx2 variable</span></div>
+<div class="line"></div>
+<div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">int</span> t=0; t&lt;T; t++) &#123;</div>
+<div class="line">  <span class="keywordflow">if</span> (t&lt;T-1) &#123;</div>
+<div class="line">    NumConstraint* c=<span class="keyword">new</span> NumConstraint(x,x[t+1]-x[t]=v[t]);</div>
+<div class="line">    ...</div>
+<div class="line">  &#125;</div>
+<div class="line">&#125;</div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>Here, <code>v</code> is not a variable but a constant (see <code>data.h</code>).</dd></dl>
+<p>Sometimes, different constraints are based on the same pattern. It is then often convenient to declare first a <code>Function</code> object.</p>
+<p><em>Example</em>. For distances constraints, we may first declare the distance function:</p>
+<div class="fragment"><div class="line">  <span class="comment">// create the distance function beforehand</span></div>
+<div class="line">  Variable a(2);       <span class="comment">// &quot;local&quot; variable</span></div>
+<div class="line">  Variable b(2);</div>
+<div class="line">  Function dist(a,b,sqrt(sqr(a[0]-b[0])+sqr(a[1]-b[1])));</div>
+</div><!-- fragment --><p> and then the equation for each time step and each beacon: </p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">int</span> t=0; t&lt;T; t++) &#123;</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i&lt;N; i++) &#123;</div>
+<div class="line">  NumConstraint* c=<span class="keyword">new</span> NumConstraint(</div>
+<div class="line">          x,dist(x[t],beacons[i])=d[t][i]);</div>
+<div class="line">  ...</div>
+<div class="line">  &#125;</div>
+<div class="line">&#125;</div>
+</div><!-- fragment --><h2><a class="anchor" id="strat1-basic-ctc"></a>
+Creating basic contractors</h2>
+<p>We can create now contractors.</p>
+<p>To create a contractor with respect to an equation we use the <code>CtcFwdBwd</code> class (stands for <em> forward-backward</em>).</p>
+<p><em>Example</em>. With the constraint x=1:</p>
+<div class="fragment"><div class="line">Variable x;</div>
+<div class="line">NumConstraint* c=<span class="keyword">new</span> NumConstraint(x,x=1);</div>
+<div class="line">Ctc* ctc=<span class="keyword">new</span> CtcFwdBwd(*c);</div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>The <code>Ctc</code> prefix indicates that this class is a contractor (i.e., it can be composed with other contractors). <code>Ctc</code> is also the name of the generic contractor class.</dd></dl>
+<h2><a class="anchor" id="strat1-comb"></a>
+Combining contractors</h2>
+<p>We are now ready to build our first strategy. We create all the contractors and push them in a vector <code>ctc</code> (this vector will be necessary for the composition):</p>
+<div class="fragment"><div class="line">  vector&lt;Ctc*&gt; ctc;</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> t=0; t&lt;T; t++) &#123;</div>
+<div class="line">    vector&lt;Ctc*&gt; cdist;</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> b=0; b&lt;N; b++) &#123;</div>
+<div class="line">      <span class="comment">// Push the contractor corresponding to </span></div>
+<div class="line">      <span class="comment">// the detection of beacon n°b at time t</span></div>
+<div class="line">      NumConstraint* c=<span class="keyword">new</span> NumConstraint(</div>
+<div class="line">               x,dist(x[t],beacons[b])=d[t][b]);</div>
+<div class="line">      ctc.push_back(<span class="keyword">new</span> CtcFwdBwd(*c));</div>
+<div class="line">    &#125;</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span> (t&lt;T-1) &#123;</div>
+<div class="line">      <span class="comment">// Push the contractor corresponding to</span></div>
+<div class="line">      <span class="comment">// the speed measurement at time t</span></div>
+<div class="line">      NumConstraint* c=<span class="keyword">new</span> NumConstraint(x,x[t+1]-x[t]=v[t]);</div>
+<div class="line">      ctc.push_back(<span class="keyword">new</span> CtcFwdBwd(*c));</div>
+<div class="line">    &#125;</div>
+<div class="line">  &#125;</div>
+</div><!-- fragment --><p> Now, we can create the composition of all these contractors using <code>CtcCompo</code> (the vector <code>ctc</code> being given in argument) and a fixpoint of the latter using <code>CtcFixPoint</code>. This gives:</p>
+<div class="fragment"><div class="line">  <span class="comment">// Composition</span></div>
+<div class="line">  CtcCompo compo(ctc);</div>
+<div class="line"></div>
+<div class="line">  <span class="comment">// FixPoint</span></div>
+<div class="line">  CtcFixPoint fix(compo);</div>
+</div><!-- fragment --><p> We are done. We just have to call the top-level contractor on the initial box.</p>
+<div class="fragment"><div class="line">  <span class="comment">// the initial box [0,L]x[0,L]x[0,L]x[0,L]</span></div>
+<div class="line">  IntervalVector box(T*2,Interval(0,L));</div>
+<div class="line"></div>
+<div class="line">  cout &lt;&lt; <span class="stringliteral">&quot;  initial box =&quot;</span> &lt;&lt; box &lt;&lt; endl &lt;&lt; endl;</div>
+<div class="line">  fix.contract(box);</div>
+<div class="line">  cout &lt;&lt; <span class="stringliteral">&quot;  final box =&quot;</span> &lt;&lt; box &lt;&lt; endl &lt;&lt; endl &lt;&lt; endl;</div>
+</div><!-- fragment --> <h2><a class="anchor" id="strat1-res"></a>
+Result</h2>
+<p>The execution shows that the final box contains the real trajectory.</p>
+<pre class="fragment">  initial box =([0, 10] ; [0, 10] ; [0, 10] ; [0, 10] ; [0, 10] ; [0, 10])
+
+  final box =([8.592079632938807, 9.009246227143752] ; [0.4364101205434934, 0.8936036705218675] ; ... )
+</pre><p>The real positions are:</p>
+<center> x[0]=8.806965820867086 y[0]=0.6934996231894474 x[1]=8.240950936914649 y[1]=1.517894644489497 x[2]=8.553965973529273 y[2]=0.5681464742605957 ... </center><h1><a class="anchor" id="strat2"></a>
+Second strategy (with outliers)</h1>
+<p>We consider now that at most <code>NB_OUTLIERS</code> outliers may occur for each time step.</p>
+<p>To contract rigorously despite of outliers, we must use the "q-intersection" operator that basically consider all possible combinations of <code></code>(N-NB_OUTLIERS) contractors among <code>N:</code> </p>
+<p>Ibex provides the <code>CtcQInter</code> contractor.</p>
+<h2><a class="anchor" id="strat2-qinter"></a>
+Q-intersection</h2>
+<p>We must only place all the contractors related to the same time step in another temporary vector (called <code>cdist</code>) and give this vector in argument of <code>CtcQInter:</code> </p>
+<p>Let us see what happens if we do this.</p>
+<p>Let us replace: </p>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span> (t&lt;T-1) &#123;</div>
+<div class="line">      <span class="comment">// Push the contractor corresponding to</span></div>
+<div class="line">      <span class="comment">// the speed measurement at time t</span></div>
+<div class="line">      NumConstraint* c=<span class="keyword">new</span> NumConstraint(x,x[t+1]-x[t]=v[t]);</div>
+<div class="line">      ctc.push_back(<span class="keyword">new</span> CtcFwdBwd(*c));</div>
+<div class="line">    &#125;</div>
+</div><!-- fragment --><p>by:</p>
+<div class="fragment"><div class="line">    <span class="comment">// create a temporary subvector</span></div>
+<div class="line">    <span class="comment">// for collecting all the contractors corresponding</span></div>
+<div class="line">    <span class="comment">// to the detections at time t</span></div>
+<div class="line">    vector&lt;Ctc*&gt; cdist;</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> b=0; b&lt;N; b++) &#123;</div>
+<div class="line">      NumConstraint* c=<span class="keyword">new</span> NumConstraint(</div>
+<div class="line">          x,dist(x[t],beacons[b])=d[t][b]);</div>
+<div class="line">      <span class="comment">// push the detection of beacon n°b</span></div>
+<div class="line">      cdist.push_back(<span class="keyword">new</span> CtcFwdBwd(*c));</div>
+<div class="line">    &#125;</div>
+<div class="line">    <span class="comment">// Push the q-intersection of all</span></div>
+<div class="line">    <span class="comment">// the contractors in &quot;cdist&quot; in the main</span></div>
+<div class="line">    <span class="comment">// vector &quot;ctc&quot;</span></div>
+<div class="line">    ctc.push_back(<span class="keyword">new</span> CtcQInter(cdist,N-NB_OUTLIERS));</div>
+</div><!-- fragment --><p> <b>Problem</b>: the program runs almost endlessly! ... Why?</p>
+<p>... because the q-intersection runs exponentially in the dimension of the input box, which is 2T.</p>
+<p>Of course, the implementation should take advantage of the fact that only 2 variables are actually impacted. But the current code is not optimized in this way.</p>
+<p>Anyway, it is often necessary to apply a contractor strategy to only a subset of variables (here, to the two components of <img class="formulaInl" alt="$x_t$" src="http://www.emn.fr/z-info/ibex/uploads/doxy/form_0.png"/>).</p>
+<p>For this end, we will make use of the <b>inverse contractor</b>.</p>
+<h2><a class="anchor" id="strat2-inverse"></a>
+Projection using the inverse contractor</h2>
+<p>Applying the q-intersection on the subset of variables x_t amounts to apply the inverse of this contractor by the projection function x&rarr; x[t].</p>
+<p>We replace: </p>
+<div class="fragment"><div class="line">    <span class="comment">// create a temporary subvector</span></div>
+<div class="line">    <span class="comment">// for collecting all the contractors corresponding</span></div>
+<div class="line">    <span class="comment">// to the detections at time t</span></div>
+<div class="line">    vector&lt;Ctc*&gt; cdist;</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> b=0; b&lt;N; b++) &#123;</div>
+<div class="line">      NumConstraint* c=<span class="keyword">new</span> NumConstraint(</div>
+<div class="line">          x,dist(x[t],beacons[b])=d[t][b]);</div>
+<div class="line">      <span class="comment">// push the detection of beacon n°b</span></div>
+<div class="line">      cdist.push_back(<span class="keyword">new</span> CtcFwdBwd(*c));</div>
+<div class="line">    &#125;</div>
+<div class="line">    <span class="comment">// Push the q-intersection of all</span></div>
+<div class="line">    <span class="comment">// the contractors in &quot;cdist&quot; in the main</span></div>
+<div class="line">    <span class="comment">// vector &quot;ctc&quot;</span></div>
+<div class="line">    ctc.push_back(<span class="keyword">new</span> CtcQInter(cdist,N-NB_OUTLIERS));</div>
+</div><!-- fragment --><p> By:</p>
+<div class="fragment"><div class="line">    vector&lt;Ctc*&gt; cdist;</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> b=0; b&lt;N; b++) &#123;</div>
+<div class="line">      <span class="comment">// Create the distance constraint with 2</span></div>
+<div class="line">      <span class="comment">// (instead of 2*T) variables</span></div>
+<div class="line">      Variable xt(2);</div>
+<div class="line">      NumConstraint* c=<span class="keyword">new</span> NumConstraint(</div>
+<div class="line">               xt,dist(xt,beacons[b])=d[t][b]);</div>
+<div class="line">      cdist.push_back(<span class="keyword">new</span> CtcFwdBwd(*c));</div>
+<div class="line">    &#125;</div>
+<div class="line"></div>
+<div class="line">    <span class="comment">// q-intersection with 2 variables only</span></div>
+<div class="line">    CtcQInter* q=<span class="keyword">new</span> CtcQInter(cdist,N-NB_OUTLIERS);</div>
+<div class="line">    <span class="comment">// Push in the main vector &quot;ctc&quot; the application</span></div>
+<div class="line">    <span class="comment">// of the latter contractor to x[t]</span></div>
+<div class="line">    ctc.push_back(<span class="keyword">new</span> CtcInverse(*q,*<span class="keyword">new</span> Function(x,x[t])));</div>
+</div><!-- fragment --><p> And now, the program terminates instantaneously. With <code>NB_OUTLIERS</code> set to 1, the dispaly shows a slightly larger box:</p>
+<pre class="fragment">initial box =([0, 10] ; [0, 10] ; [0, 10] ; [0, 10] ; [0, 10] ; [0, 10])
+
+final box =([8.542599451371126, 9.032225305125761] ; [0.3807126686643456, 1.002241041162326] ; ...)
+</pre><h1><a class="anchor" id="strat3"></a>
+Third strategy (how can this scale?)</h1>
+<p>The program we have proposed so far does not really scale. For example, setting T=200000 in <code>data.cpp</code> will make the program run for a long time and crash after a memory overflow. We see now a more efficient variant. This variant, however, will be less concise. We will also partially lose the elegancy of contractor programming. In particular, we will do ourselves the loop that compose the contractors as time increases. But, after all, a programming language is always a compromise between efficiency and elegancy so if you really look for efficiency, you should accept to sacrify a little bit of elegancy.</p>
+<p>Let us first explain why the current program does not scale. In the program, we build a <code>NumConstraint</code> object for most of the contractors and each of these <code>NumConstraint</code> objects builds (silently) a <code>Function</code> object. For instance, by writing: </p>
+<div class="fragment"><div class="line">NumConstraint* c=<span class="keyword">new</span> NumConstraint(xt,dist(xt,beacons[b])=d[t][b]);</div>
+</div><!-- fragment --><p>The following function is created somewhere </p>
+<center> x &rarr; dist(xt,beacons[b])-d[t][b] </center><p>Now, you must be aware that the construction of <code>Function</code> objects is both time and memory consuming. The good point however is that, once built, these objects are fast to use (evaluation, gradient, etc.).</p>
+<p>The <code>CtcQInter</code> objects are also costly because each contains a set of N references.</p>
+<p>It is clear in our context that the we keep on creating the same contractors again and again, with only one of the parameters changing with time (in our previous example, d[t][b]). The key idea is to factorize all these contractors and create a ``parametrized'' contractor where the time is set dynamically. Let us start with the detection constraints.</p>
+<h2><a class="anchor" id="strat3-detect"></a>
+Detection contractor</h2>
+<p>The following class declares a contractor for the detection of a given beacon. This is a handcrafted contractor so we need to create a new class that extends <code>Ctc</code> and implements the <code>contract()</code> function. Time (contrary to the beacon number) is not set at construction so that one instance of this contractor can be used for any time:</p>
+<div class="fragment"><div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment"> * Contractor for the detection of beacon n°b.</span></div>
+<div class="line"><span class="comment"> *</span></div>
+<div class="line"><span class="comment"> * This is a contractor parametrized by the time &quot;t&quot;.</span></div>
+<div class="line"><span class="comment"> * It means that a call to contract() must be</span></div>
+<div class="line"><span class="comment"> * preceded by a call to set_time(t).</span></div>
+<div class="line"><span class="comment"> */</span></div>
+<div class="line"><span class="keyword">class </span>Detection : <span class="keyword">public</span> Ctc &#123;</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">        <span class="comment">/*</span></div>
+<div class="line"><span class="comment">         * The contractor is for a specific beacon &quot;b&quot; which</span></div>
+<div class="line"><span class="comment">         * is specified in argument of the constructor.</span></div>
+<div class="line"><span class="comment">         */</span></div>
+<div class="line">        Detection(<span class="keywordtype">int</span> b) : Ctc(2), b(b) &#123;</div>
+<div class="line">                Variable x(2);</div>
+<div class="line">                <span class="comment">// This function will be created once for the T time steps!</span></div>
+<div class="line">                dist = <span class="keyword">new</span> Function(x,sqrt(sqr(x[0]-beacons[b][0])+sqr(x[1]-beacons[b][1])));</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line">        <span class="comment">/*</span></div>
+<div class="line"><span class="comment">         * Allow to set the time dynamically</span></div>
+<div class="line"><span class="comment">         */</span></div>
+<div class="line">        <span class="keywordtype">void</span> set_time(<span class="keywordtype">int</span> t) &#123;</div>
+<div class="line">                this-&gt;t=t;</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordtype">void</span> contract(IntervalVector&amp; x) &#123;</div>
+<div class="line">                <span class="comment">// by simplicity, we call the backward</span></div>
+<div class="line">                <span class="comment">// operator on the function directly</span></div>
+<div class="line">                dist-&gt;backward(d[t][b],x);</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keyword">protected</span>:</div>
+<div class="line">        <span class="keywordtype">int</span> b;          <span class="comment">// beacon number</span></div>
+<div class="line">        <span class="keywordtype">int</span> t;          <span class="comment">// time number</span></div>
+<div class="line">        Function* dist; <span class="comment">// distance function</span></div>
+<div class="line">&#125;;</div>
+</div><!-- fragment --> <h2><a class="anchor" id="strat3-speed"></a>
+Speed contractor</h2>
+<p>We do the same with the second set of time-dependant constraints, namely the "speed" or "delta" constraints between two consecutive time steps.</p>
+<div class="fragment"><div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment"> * Contractor for the &quot;speed&quot; constraint.</span></div>
+<div class="line"><span class="comment"> *</span></div>
+<div class="line"><span class="comment"> * This is a contractor parametrized by the time &quot;t&quot;.</span></div>
+<div class="line"><span class="comment"> * It means that a call to contract() must be</span></div>
+<div class="line"><span class="comment"> * preceded by a call to set_time(t).</span></div>
+<div class="line"><span class="comment"> */</span></div>
+<div class="line"><span class="keyword">class </span>Speed : <span class="keyword">public</span> Ctc &#123;</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">        Speed() : Ctc(2) &#123;</div>
+<div class="line">                Variable a(2);</div>
+<div class="line">                Variable b(2);</div>
+<div class="line">                delta = <span class="keyword">new</span> Function(a,b,b-a);</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordtype">void</span> contract(IntervalVector&amp; x) &#123;</div>
+<div class="line">                delta-&gt;backward(v[t],x);</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordtype">void</span> set_time(<span class="keywordtype">int</span> t) &#123;</div>
+<div class="line">                this-&gt;t=t;</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line"><span class="keyword">protected</span>:</div>
+<div class="line">        <span class="keywordtype">int</span> t;</div>
+<div class="line">        Function* delta;</div>
+<div class="line">&#125;;</div>
+</div><!-- fragment --> <h2><a class="anchor" id="strat3-scan"></a>
+Scan contractor (q-intersection)</h2>
+<p>Again, we create a parametrized contractor for the q-intersection of the N detections occuring at a given time. This set of measurements somehow forms a scanning of the environment so we name this contractor <code>Scan:</code> </p>
+<div class="fragment"><div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment"> * Scanning contractor that aggregates</span></div>
+<div class="line"><span class="comment"> * the N detections occurring at a given time t.</span></div>
+<div class="line"><span class="comment"> */</span></div>
+<div class="line"><span class="keyword">class </span>Scan : <span class="keyword">public</span> Ctc &#123;</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">        Scan() : Ctc(2) &#123;</div>
+<div class="line"></div>
+<div class="line">                <span class="comment">// The N detections</span></div>
+<div class="line">                detect = <span class="keyword">new</span> Detection*[N];</div>
+<div class="line"></div>
+<div class="line">                <span class="comment">// The q-intersection is created as before,</span></div>
+<div class="line">                <span class="comment">// using a temporary vector &quot;cdist&quot;</span></div>
+<div class="line">                vector&lt;Ctc*&gt; cdist;</div>
+<div class="line">                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> b=0; b&lt;N; b++) &#123;</div>
+<div class="line">                        cdist.push_back(detect[b]=<span class="keyword">new</span> Detection(b));</div>
+<div class="line">                &#125;</div>
+<div class="line">                qinter = <span class="keyword">new</span> CtcQInter(cdist,N-NB_OUTLIERS);</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordtype">void</span> contract(IntervalVector&amp; x) &#123;</div>
+<div class="line">                qinter-&gt;contract(x);</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordtype">void</span> set_time(<span class="keywordtype">int</span> t) &#123;</div>
+<div class="line">                <span class="comment">// we set the time of each sub-contractor</span></div>
+<div class="line">                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i=0; i&lt;N; i++)</div>
+<div class="line">                        detect[i]-&gt;set_time(t);</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line"><span class="keyword">protected</span>:</div>
+<div class="line">        Detection** detect;</div>
+<div class="line">        CtcQInter* qinter;</div>
+<div class="line">        <span class="keywordtype">int</span> t;</div>
+<div class="line">&#125;;</div>
+</div><!-- fragment --> <h2><a class="anchor" id="strat3-traj"></a>
+Trajectory</h2>
+<p>We can create now the final contractor that calls 2T times an instance of the <code>Scan</code> and <code>Speed</code> contractors (there is only one instance of each). A call to <code>set_time()</code> precedes every call to <code>contract()</code>. Note that a fix-point would not be reasonable here.</p>
+<div class="fragment"><div class="line"><span class="comment">/*</span></div>
+<div class="line"><span class="comment"> * The contractor for the whole trajectory.</span></div>
+<div class="line"><span class="comment"> *</span></div>
+<div class="line"><span class="comment"> * It will contract every positions of the robot using</span></div>
+<div class="line"><span class="comment"> * detections and speed data, in a single pass (no</span></div>
+<div class="line"><span class="comment"> * fixpoint).</span></div>
+<div class="line"><span class="comment"> */</span></div>
+<div class="line"><span class="keyword">class </span>Trajectory : <span class="keyword">public</span> Ctc &#123;</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">        Trajectory() : Ctc(2*T) &#123; &#125;</div>
+<div class="line"></div>
+<div class="line">        <span class="keywordtype">void</span> contract(IntervalVector&amp; x) &#123;</div>
+<div class="line">                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> t=0; t&lt;T; t++) &#123;</div>
+<div class="line">                        <span class="comment">// Get a copy of the domain of x[t]</span></div>
+<div class="line">                        IntervalVector xt=x.subvector(2*t,2*t+1);</div>
+<div class="line">                        <span class="comment">// Set the time</span></div>
+<div class="line">                        scan.set_time(t);</div>
+<div class="line">                        <span class="comment">// Contract with the scanning</span></div>
+<div class="line">                        scan.contract(xt);</div>
+<div class="line">                        <span class="comment">// Update the box &quot;x&quot; with the new domain for x[t]</span></div>
+<div class="line">                        x.put(2*t,xt);</div>
+<div class="line"></div>
+<div class="line">                        <span class="keywordflow">if</span> (t&lt;T-1) &#123;</div>
+<div class="line">                                <span class="comment">// Get a copy of the domain of x[t] and x[t+1]</span></div>
+<div class="line">                                IntervalVector xtt1=x.subvector(2*t,2*(t+1)+1);</div>
+<div class="line">                                <span class="comment">// Set the time</span></div>
+<div class="line">                                speed.set_time(t);</div>
+<div class="line">                                <span class="comment">// Contract with the speed vector</span></div>
+<div class="line">                                speed.contract(xtt1);</div>
+<div class="line">                                <span class="comment">// Update the box</span></div>
+<div class="line">                                x.put(2*t,xtt1);</div>
+<div class="line">                        &#125;</div>
+<div class="line">                &#125;</div>
+<div class="line">        &#125;</div>
+<div class="line"></div>
+<div class="line">        Scan scan;</div>
+<div class="line">        Speed speed;</div>
+<div class="line">&#125;;</div>
+</div><!-- fragment --></div></div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.3.1-->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generated on Mon Jul 15 2013 14:45:35 for IBEX by &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="http://www.emn.fr/z-info/ibex/uploads/doxy/doxygen.png" alt="doxygen"/>
+</a> 1.8.3.1
+</small></address>
+</body>
+</html>

@@ -1,0 +1,866 @@
+/* browsers interpret margin and padding a little differently, we'll remove all default padding and margins and set them later on */
+* {
+	margin: 0;
+	padding: 0;
+}
+/*Set initial font styles*/
+body {
+	text-align: left;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 75.01%;
+	line-height: 1em;
+}
+/*set font size for all divs, this overrides some body rules*/
+div {
+	font-size: 1em;
+}
+/*if img is inside "a" it would have borders, we don't want that*/
+img {
+	border: 0;
+}
+/*default link styles*/
+a, a:link a:active {
+/* set all links to have underline */
+	text-decoration: underline;
+/* css validation will give a warning if color is set without background color. this will explicitly tell this element to inherit bg colour from parent element */
+	background-color: inherit;
+/* this is a bluish color, you change this for all default link colors */
+	color: #18507C;
+}
+a:visited {
+/* keeps the underline */
+	text-decoration: underline;
+	background-color: inherit;
+/* a different color is used for visited links */
+	color: #18507C;
+}
+a:hover {
+/* remove underline on hover */
+	text-decoration: none;
+	background-color: inherit;
+/* using a different color makes the hover obvious */
+	color: #385C72;
+}
+/*****************basic layout *****************/
+body {
+	margin: 0;
+	padding: 0;
+/* default text color for entire site*/
+	color: #333;
+/* you can set your own image and background color here */
+	background: #f4f4f4 url(../../uploads/ngrey/body.png) repeat-x left top;
+}
+div#pagewrapper {
+/* min max width, IE wont understand these, so we will use java script magic in the <head> */
+	max-width: 99em;
+	min-width: 60em;
+/* now that width is set this centers wrapper */
+	margin: 0 auto;
+	background-color: #fefefe;
+	color: black;
+}
+/* header, we will hide h1 a text and replace it with an image, we assign a height for it so the image wont cut off */
+div#header {
+/* adjust according your image size */
+	height: 100px;
+	margin: 0;
+	padding: 0;
+/* you can set your own image here, will go behind h1 a image */
+	background: #f4f4f4 url(../../uploads/ngrey/bg_banner.png) repeat-x left top;
+/* border just the bottom */
+	border-bottom: 1px solid #D9E2E6;
+}
+div#header h1 a {
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/logoCMS.png) no-repeat left top;
+/* this will make the "a" link a solid shape */
+	display: block;
+/* adjust according your image size */
+	height: 100px;
+/* this hides the text */
+	text-indent: -999em;
+/* old firefox would have shown underline for the link, this explicitly hides it */
+	text-decoration: none;
+}
+div#header h1 {
+	margin: 0;
+	padding: 0;
+/*these keep IE6 from pushing the header to more than the set size*/
+	line-height: 0;
+	font-size: 0;
+/* this will keep IE6 from flickering on hover */
+	background: url(../../uploads/ngrey/logoCMS.png) no-repeat left top;
+}
+div#header h2 {
+/* this is where the site name is */
+	float: right;
+	line-height: 1.2em;
+/* this keeps IE6 from not showing the whole text */
+	font-size: 1.5em;
+/* keeps the size uniform */
+	margin: 35px 65px 0px 0px;
+/* adjust according your text size */
+	color: #f4f4f4;
+}
+div.crbk {
+/* sets all to 0 */
+	margin: 0;
+	padding: 0;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainrtup.gif) no-repeat right bottom;
+}
+div.breadcrumbs {
+/* CSS short hand rule first value is top then right, bottom and left */
+	padding: 1em 0em 1em 1em;
+/* its good to set font sizes to be relative, this way viewer can change his/her font size */
+	font-size: 90%;
+/* css shorthand rule will be opened to be "0px 0px 0px 0px" */
+	margin: 0px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainleftup.gif) no-repeat left bottom;
+}
+div.breadcrumbs span.lastitem {
+	font-weight: bold;
+}
+div#search {
+/* position for the search box */
+	float: right;
+/* enough width for the search input box */
+	width: 27em;
+	text-align: right;
+	padding: 0.5em 0 0.2em 0;
+	margin: 0 1em;
+}
+/* a class for Submit button for the search input box */
+input.search-button {
+	border: none;
+	height: 22px;
+	width: 53px;
+	margin-left: 5px;
+	padding: 0px 2px 2px 0px;
+/* makes the hover cursor show, you can set your own cursor here */
+	cursor: pointer;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/search.gif) no-repeat center center;
+}
+div#content {
+/* some air above and under menu and content */
+	margin: 1.5em auto 2em 0;
+	padding: 0px;
+}
+/* this gets all the outside calls that were used on the div#main before  */
+div.back1 {
+/* this will give room for sidebar to be on the left side, make sure this number is bigger than sidebar width */
+	margin-left: 29%;
+/* and some air on the right */
+	margin-right: 2%;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainrt1.gif) no-repeat right top;
+}
+/* this is an IE6 hack, you may see these through out the CSS */
+* html div.back1 {
+/* unlike other browser IE6 needs float:right and a width */
+	float: right;
+	width: 69%;
+/* and we take this out or it will stop at the bottom  */
+	margin-left: 0%;
+/* and some air on the right */
+	margin-right: 10px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainrt1.gif) no-repeat right top;
+}
+div.back2 {
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainleft1.gif) no-repeat left top;
+}
+div.back3 {
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/wbtmleft.gif) no-repeat left bottom;
+}
+div#main {
+/* this is the last inside div so we set the space inside it to keep all content away from the edges of images/box */
+	padding: 10px 15px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/rtup.gif) no-repeat right bottom;
+}
+div.back #main {
+/* this is the last inside div so we set the space inside it to keep all content away from the edges of images/box */
+	padding: 10px 30px 1px 15px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/wbtmleft.gif) no-repeat left bottom;
+}
+div.back {
+/* this will give room for sidebar to be on the left side, make sure this space is bigger than sidebar width */
+	margin-left: 29%;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/wtopleft.gif) no-repeat left top;
+}
+div#sidebar {
+/* set sidebar left. Change to right, float: right; instead, but you will need to change the margins. */
+	float: left;
+/* sidebar width, if you change this change div.back and/or div.back1 margins */
+	width: 26%;
+/* FIX IE double margin bug */
+	display: inline;
+/* the 20px is on the bottom, insures space above footer if longer than content */
+	margin: 0px 0px 20px;
+	padding: 0px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainrt1.gif) no-repeat right top;
+}
+div#sidebara {
+	padding: 13px 15px 3px 0px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainrtup.gif) no-repeat right bottom;
+}
+div#sidebarb {
+	padding: 10px 10px 1px 0px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/mainrtup.gif) no-repeat right bottom;
+}
+div.footback {
+/* keep footer below content and menu */
+	clear: both;
+/* this sets 10px on right to let the right image show, the balance 10px left on next div */
+	padding: 0px 10px 0px 0px;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/wfootrt.gif) no-repeat right top;
+}
+div#footer {
+/* this sets 10px on left to balance 10px right on last div */
+	padding: 0px 0px 0px 10px;
+/* color of text, the link color is set below */
+	color: #595959;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/wtopleft.gif) no-repeat left top;
+}
+div.leftfoot {
+	float: left;
+	width: 30%;
+	margin-left: 20px
+}
+div#footer p {
+/* sets different font size from default */
+	font-size: 0.8em;
+/* some air for footer */
+	padding: 1.5em;
+/* centered text */
+	text-align: center;
+	margin: 0;
+}
+div#footer p a {
+/* footer link would be same color as default we want it same as footer text */
+	color: #595959;
+}
+/* as we hid all hr for accessibility we create new hr with div class="hr" element */
+div.hr {
+	height: 1px;
+	padding: 1em;
+	border-bottom: 1px dotted black;
+	margin: 1em;
+}
+/* relational links under content */
+div.left49 {
+/* combined percentages of left+right equaling 100%  might lead to rounding error on some browser */
+	width: 70%;
+}
+div.right49 {
+	float: right;
+	width: 29%;
+/* set right to keep text on right */
+	text-align: right;
+}
+/********************CONTENT STYLING*********************/
+/* HEADINGS */
+div#content h1 {
+/* font size for h1 */
+	font-size: 2em;
+	line-height: 1em;
+	margin: 0;
+}
+div#content h2 {
+	color: #294B5F;
+/* font size for h2 the higher the h number the smaller the font size, most times */
+	font-size: 1.5em;
+	text-align: left;
+/* some air around the text */
+	padding-left: 0.5em;
+	padding-bottom: 1px;
+/* set borders around header */
+	border-bottom: 1px solid #899092;
+	border-left: 1.1em solid #899092;
+/* a larder than h1 line height */
+	line-height: 1.5em;
+/* and some air under the border */
+	margin: 0 0 0.5em 0;
+}
+div#content h3 {
+	color: #294B5F;
+	font-size: 1.3em;
+	line-height: 1.3em;
+	margin: 0 0 0.5em 0;
+}
+div#content h4 {
+	color: #294B5F;
+	font-size: 1.2em;
+	line-height: 1.3em;
+	margin: 0 0 0.25em 0;
+}
+div#content h5 {
+	color: #294B5F;
+	font-size: 1.1em;
+	line-height: 1.3em;
+	margin: 0 0 0.25em 0;
+}
+h6 {
+	color: #294B5F;
+	font-size: 1em;
+	line-height: 1.3em;
+	margin: 0 0 0.25em 0;
+}
+/* END HEADINGS */
+/* TEXT */
+p {
+/* default p font size, this is set different in some other divs */
+	font-size: 1em;
+/* some air around p elements */
+	margin: 0 0 1.5em 0;
+	line-height: 1.4em;
+	padding: 0;
+}
+blockquote {
+	border-left: 10px solid #ddd;
+	margin-left: 10px;
+}
+strong, b {
+/* explicit setting for these */
+	font-weight: bold;
+}
+em, i {
+/* explicit setting for these */
+	font-style: italic;
+}
+/* Wrapping text in <code> tags. Makes CSS not validate */
+code, pre {
+/* css-3 */
+	white-space: pre-wrap;
+/* Mozilla, since 1999 */
+	white-space: -moz-pre-wrap;
+/* Opera 4-6 */
+	white-space: -pre-wrap;
+/* Opera 7 */
+	white-space: -o-pre-wrap;
+/* Internet Explorer 5.5+ */
+	word-wrap: break-word;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 1em;
+}
+pre {
+/* black border for pre blocks */
+	border: 1px solid #000;
+/* set different from surroundings to stand out */
+	background-color: #ddd;
+	margin: 0 1em 1em 1em;
+	padding: 0.5em;
+	line-height: 1.5em;
+	font-size: 90%;
+}
+/* Separating the divs on the template explanation page */
+div.templatecode {
+	margin: 0 0 2.5em;
+}
+/* END TEXT */
+/* LISTS */
+/* lists in content need some margins to look nice */
+div#main ul,
+div#main ol,
+div#main dl {
+	font-size: 1.0em;
+	line-height: 1.4em;
+	margin: 0 0 1.5em 0;
+}
+div#main ul li,
+div#main ol li {
+	margin: 0 0 0.25em 3em;
+}
+/* definition lists topics on bold */
+div#main dl {
+	margin-bottom: 2em;
+	padding-bottom: 1em;
+	border-bottom: 1px solid #c0c0c0;
+}
+div#main dl dt {
+	font-weight: bold;
+	margin: 0 0 0 1em;
+}
+div#main dl dd {
+	margin: 0 0 1em 1em;
+}
+/* END LISTS */
+/* Stylesheet: Layout: Left sidebar + 1 column Modified On 2009-05-10 14:06:00 */
+/******************** MENU *********************/
+#menu_vert {
+	margin: 0;
+	padding: 0;
+}
+#menu_vert ul {
+/* remove any bullets */
+	list-style: none;
+/* margin/padding set in li */
+	margin: 0px;
+	padding: 0px;
+}
+#menu_vert ul ul {
+	margin: 0;
+/* padding right sets second level li in on right from first li */
+	padding: 0px 5px 0px 0px;
+/* replaces bottom of li.menuactive menuparent, looks like li below it, set in 5px more, is sitting on top of it */
+	background: transparent url(../../uploads/ngrey/liup.gif) no-repeat right -4px;
+}
+#menu_vert li {
+/* remove any bullets */
+	list-style: none;
+/* negative bottom margin pulls them together, images look like one border between */
+	margin: 0px 0px -1px;
+/* bottom padding pushes "a" up enough to show our image */
+	padding: 0px 0px 4px 0px;
+/* you can set your own image here */
+	background: transparent url(../../uploads/ngrey/liup.gif) no-repeat right bottom;
+}
+#menu_vert li.currentpage {
+	padding: 0px 0px 3px 0px;
+}
+#menu_vert li.menuactive {
+	margin: 0;
+	padding: 0px;
+/* replaced by image in ul ul */
+	background: none;
+}
+#menu_vert li.menuactive ul {
+	margin: 0;
+}
+#menu_vert li.activeparent {
+	margin: 0;
+	padding: 0px;
+}
+/* fix stupid IE6 bug with display:block; */
+* html #menu_vert li {
+	height: 1%;
+}
+* html #menu_vert li a {
+	height: 1%;
+}
+* html #menu_vert li hr {
+	height: 1%;
+}
+/** end fix **/
+/* first level links */
+div#menu_vert a {
+/* IE6 has problems with this, fixed above */
+	display: block;
+/* some air for it */
+	padding: 0.8em 0.3em 0.5em 1.5em;
+/* this will be link color for all levels */
+	color: #18507C;
+/* Fixes IE7 whitespace bug */
+	min-height: 1em;
+/* no underline for links */
+	text-decoration: none;
+/* you can set your own image here this is tall enough to cover text heavy links */
+	background: transparent url(../../uploads/ngrey/libk.gif) no-repeat right top;
+}
+/* next level links, more padding and smaller font */
+div#menu_vert ul ul a {
+	font-size: 90%;
+	padding: 0.8em 0.3em 0.5em 2.8em;
+}
+/* third level links, more padding */
+div#menu_vert ul ul ul a {
+	padding: 0.5em 0.3em 0.3em 3em;
+}
+/* hover state for all links */
+div#menu_vert a:hover {
+	background-color: transparent;
+	color: #595959;
+	text-decoration: underline;
+}
+div#menu_vert a.activeparent:hover {
+	color: #595959;
+}
+/* active parent, that is the first level parent of a child page that is the current page */
+div#menu_vert li.activeparent {
+/* you can set your own image here */
+	background: transparent url(../../uploads/ngrey/liup.gif) no-repeat right -65px;
+/* white to contrast with background image */
+	color: #fff;
+}
+div#menu_vert li.activeparent a.activeparent {
+/* you can set your own image here */
+	background: transparent url(../../uploads/ngrey/libk.gif) no-repeat right top;
+/* to contrast with background image */
+	color: #000;
+}
+div#menu_vert li a.parent {
+/* takes left padding out so span image has room on left */
+	padding-left: 0em;
+}
+div#menu_vert ul ul li a.parent {
+/* increased padding on left offsets it from one above */
+	padding-left: 0.9em;
+}
+div#menu_vert li a.parent span {
+	display: block;
+	margin: 0;
+/* adds left padding taken out of "a.parent" */
+	padding-left: 1.5em;
+/* arrow on left for pages with children, points down, you can set your own image here */
+	background: transparent url(../../uploads/ngrey/active.png) no-repeat 2px center;
+}
+div#menu_vert li a.parent:hover {
+/* removes underline hover effect */
+	text-decoration: none;
+}
+div#menu_vert li a.parent:hover span {
+	display: block;
+	margin: 0;
+	padding-left: 1.5em;
+/* arrow on left for pages with children, points right for hover, you can set your own image here */
+	background: transparent url(../../uploads/ngrey/parent.png) no-repeat 2px center;
+}
+div#menu_vert li a.menuactive.menuparent {
+/* sets it in a little more than a.parent */
+	padding-left: 0.35em;
+}
+div#menu_vert ul ul li a.menuactive.menuparent {
+/* sets it in a little more on next level */
+	padding-left: 0.99em;
+}
+div#menu_vert li a.menuactive.menuparent span {
+	display: block;
+	margin: 0;
+/* to contrast with non active pages */
+	font-weight: bold;
+	padding-left: 1.5em;
+/* arrow on left for active pages with children, points right, you can set your own image here */
+	background: transparent url(../../uploads/ngrey/parent.png) no-repeat 2px center;
+}
+div#menu_vert li a.menuactive.menuparent:hover {
+	text-decoration: none;
+	color: #18507C;
+}
+div#menu_vert ul ul li a.activeparent {
+	color: #fff;
+}
+/* current pages in the default Menu Manager template are unclickable. This is for current page on first level */
+div#menu_vert ul h3 {
+	display: block;
+/* some air for it */
+	padding: 0.8em 0.5em 0.5em 1.5em;
+/* this will be link color for all levels */
+	color: #000;
+/* instead of the normal font size for <h3> */
+	font-size: 1em;
+/* as <h3> normally has some margin by default */
+	margin: 0;
+/* you can set your own image here, same as "a" */
+	background: transparent url(../../uploads/ngrey/libk.gif) no-repeat right top;
+}
+/* next level current pages, more padding, smaller font and no background color or bottom border */
+div#menu_vert ul ul h3 {
+	font-size: 90%;
+	padding: 0.8em 0.5em 0.5em 2.8em;
+/* you can set your own image here, same as "a" */
+	background: transparent url(../../uploads/ngrey/libk.gif) no-repeat right top;
+	color: #000;
+}
+/* current page on third level, more padding */
+div#menu_vert ul ul ul h3 {
+	padding: 0.6em 0.5em 0.2em 3em;
+}
+/* BIG NOTE: I didn't do anything to these, never tested */
+/* section header */
+div#menu_vert li.sectionheader {
+	border-right: none;
+	padding: 0.8em 0.5em 0.5em 1.5em;
+	background: transparent url(../../uploads/ngrey/libk.gif) no-repeat right top;
+	line-height: 1em;
+	margin: 0;
+        color: #18507C;
+        cursor:text;
+}
+/* separator */
+div#menu_vert .separator {
+	height: 1px !important;
+	margin-top: -1px;
+	margin-bottom: 0;
+	-padding: 2px 0 2px 0;
+	background-color: #000;
+	overflow: hidden !important;
+	line-height: 1px !important;
+	font-size: 1px;
+/* for ie */
+}
+div#menu_vert li.separator hr {
+	display: none;
+/* this is for accessibility */
+}
+/* Stylesheet: Navigation: Simple - Vertical Modified On 2009-07-23 00:17:42 */
+div#news {
+/* margin for the entire div surrounding the news items */
+	margin: 2em 0 1em 1em;
+/* border set here */
+	border: 1px solid #909799;
+/* sets it off from surroundings */
+	background: #f5f5f5;
+}
+div#news h2 {
+	line-height: 2em;
+/* you can set your own image here */
+	background: url(../../uploads/ngrey/darknav.png) repeat-x left center;
+	color: #f5f5f5;
+	border: none
+}
+.NewsSummary {
+/* padding for the news article summary */
+	padding: 0.5em 0.5em 1em;
+/* margin to the bottom of the news article summary */
+	margin: 0 0.5em 1em 0.5em;
+	border-bottom: 1px solid #ccc;
+}
+.NewsSummaryPostdate {
+/* smaller than default text size */
+	font-size: 90%;
+/* bold to set it off from text */
+	font-weight: bold;
+}
+.NewsSummaryLink {
+/* bold to set it off from text */
+	font-weight: bold;
+/* little more room at top */
+	padding-top: 0.2em;
+}
+.NewsSummaryCategory {
+/* italic to set it off from text */
+	font-style: italic;
+	margin: 5px 0;
+}
+.NewsSummaryAuthor {
+/* italic to set it off from text */
+	font-style: italic;
+	padding-bottom: 0.5em;
+}
+.NewsSummarySummary, .NewsSummaryContent {
+/* larger than default text */
+	line-height: 140%;
+}
+.NewsSummaryMorelink {
+	padding-top: 0.5em;
+}
+#NewsPostDetailDate {
+/* smaller text */
+	font-size: 90%;
+	margin-bottom: 5px;
+/* bold to set it off from text */
+	font-weight: bold;
+}
+#NewsPostDetailSummary {
+/* larger than default text */
+	line-height: 150%;
+}
+#NewsPostDetailCategory {
+/* italic to set it off from text */
+	font-style: italic;
+	border-top: 1px solid #ccc;
+	margin-top: 0.5em;
+	padding: 0.2em 0;
+}
+#NewsPostDetailContent {
+	margin-bottom: 15px;
+/* larger than default text */
+	line-height: 150%;
+}
+#NewsPostDetailAuthor {
+	padding-bottom: 1.5em;
+/* italic to set it off from text */
+	font-style: italic;
+}
+/* more divs, left unstyled, just so you know the IDs of them */ 
+#NewsPostDetailTitle {
+}
+#NewsPostDetailHorizRule {
+}
+#NewsPostDetailPrintLink {
+}
+#NewsPostDetailReturnLink {
+}
+div#news ul li {
+	padding: 2px 2px 2px 5px;
+	margin-left: 20px;
+}
+/* Stylesheet: Module: News Modified On 2009-05-09 23:29:39 */
+/* accessibility */
+/* menu links accesskeys */
+span.accesskey {
+	text-decoration: none;
+}
+/* accessibility divs are hidden by default, text, screenreaders and such will show these */
+.accessibility, hr {
+/* position set so the rest can be set out side of visual browser viewport */
+	position: absolute;
+/* takes it out top side */
+	top: -999em;
+/* takes it out left side */
+	left: -999em;
+}
+/* definition tags are also hidden, these are also used for accessibility menu links */
+dfn {
+	position: absolute;
+	left: -1000px;
+	top: -1000px;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+	display: inline;
+}
+/* end accessibility */
+/* wiki style external links */
+/* external links will have "(external link)" text added, lets hide it */
+a.external span {
+	position: absolute;
+	left: -5000px;
+	width: 4000px;
+}
+a.external {
+/* make some room for the image, css shorthand rules, read: first top padding 0 then right padding 12px then bottom then right */
+	padding: 0 12px 0 0;
+}
+/* colors for external links */
+a.external:link {
+	color: #18507C;
+/* background image for the link to show wiki style arrow */
+	background: url(../../uploads/NCleanBlue/external.gif) no-repeat 100% -100px;
+}
+a.external:visited {
+	color: #18507C;
+/* a different color can be used for visited external links */
+/* Set the last 0 to -100px to use that part of the external.gif image for different color for active links external.gif is actually 300px tall, we can use different positions of the image to simulate rollover image changes.*/
+	background: url(../../uploads/NCleanBlue/external.gif) no-repeat 100% -100px;
+}
+a.external:hover {
+	color: #18507C;
+/* Set the last 0 to -200px to use that part of the external.gif image for different color on hover */
+	background: url(../../uploads/NCleanBlue/external.gif) no-repeat 100% 0;
+	background-color: inherit;
+}
+/* end wiki style external links */
+/* clearing */
+/* clearfix is a hack for divs that hold floated elements. it will force the holding div to span all the way down to last floated item. We strongly recommend against using this as it is a hack and might not render correctly but it is included here for convenience. Do not edit if you dont know what you are doing*/
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.clear {
+	height: 0;
+	clear: both;
+	width: 90%;
+	visibility: hidden;
+}
+#main .clear {
+	height: 0;
+	clear: right;
+	width: 90%;
+	visibility: hidden;
+}
+* html>body .clearfix {
+	display: inline-block;
+	width: 100%;
+}
+* html .clear {
+/* Hides from IE-mac \*/
+	height: 1%;
+	clear: right;
+	width: 90%;
+/* End hide from IE-mac */
+}
+/* end clearing */
+/* Stylesheet: Accessibility and cross-browser tools Modified On 2009-05-13 10:42:54 */
+#footer ul {
+/* some margin is set in the footer padding */
+   margin: 0px;
+/* calling a specific side, left in this case */
+   margin-left: 5px;
+   padding: 0px;
+/* remove any default bullets, image used in li call */
+   list-style: none;
+}
+#footer ul li {
+/* remove any default bullets, image used for consistency */
+   list-style: none;
+/* float left to set first level li items across the top */
+   float:left;
+/* a little margin at top */
+   margin: 5px 0px 0px;
+/* padding all the way around */
+   padding: 5px;
+/* you can set your own image here, used for consistency */
+   background: url(../../uploads/ngrey/dot.gif) no-repeat left 10px;
+}
+#footer ul li a {
+/* this will make the "a" link a solid shape */
+   display:block;
+   margin: 2px 0px 4px;
+   padding: 0px 5px 5px 5px;
+}
+/* set h3 to look like "a" */
+#footer li h3 {
+   font-weight:normal;
+   font-size:100%;
+   margin: 2px 0px 2px 0px;
+   padding: 0px 5px 5px 5px;
+}
+/* set h3 to look like "a", less margin at this level */
+#footer li li h3 {
+   font-weight:normal;
+   font-size:100%;
+   margin: 0px;
+   padding: 0px 5px 5px 5px;
+}
+#footer ul li li {
+/* remove any default bullets, image used for consistency */
+   list-style: none;
+/* remove float so they line up under top li */
+   float:none;
+/* less margin/padding */
+   margin: 0px;
+   padding: 0px 0px 0px 5px;
+/* you can set your own image here, used for consistency */
+   background: url(../../uploads/ngrey/dot.gif) no-repeat left 3px;
+}
+/* fix for IE6 */
+* html #footer ul li a {
+   margin: 2px 0px 0px;
+   padding: 0px 5px 5px 5px;
+}
+* html #footer ul li li a {
+   margin: 0px 0px 0px;
+   padding: 0px 5px 0px 5px;
+}
+/* End fix for IE6 */
+#footer ul ul {
+/* remove float so they line up under top li */
+   float:none;
+/* a little margin to offset it */
+   margin: 0px 0px 0px 8px;
+   padding: 0;
+}
+#footer ul ul ul {
+/* remove float so they line up under li above it */
+   float:none;
+/* a little margin to offset it */
+   margin: 0px 0px 0px 8px;
+   padding: 0;
+}
+/* Stylesheet: Navigation: FatFootMenu Modified On 2009-05-09 23:47:45 */

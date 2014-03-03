@@ -1,0 +1,54 @@
+/*********************************************
+Sample stylesheet for mobile and small screen handheld devices
+
+Just a simple layout suitable for smaller screens with less 
+styling cabapilities and minimal css
+
+Note: If you dont want to support mobile devices you can
+safely remove this stylesheet.
+*********************************************/
+/* remove all padding and margins and set width to 100%. This should be default for handheld devices but its good to set these explicitly */
+body {
+margin:0;
+padding:0;
+width:100%;
+}
+
+/* hide accessibility noprint and definition */
+.accessibility,
+.noprint,
+dfn {
+display:none;
+}
+
+/* dont want to download image for header so just set bg color */
+div#header,
+div#footer {
+background-color: #385C72;  
+color: #fff;
+text-align:center;
+}
+
+/* text colors for header and footer */
+div#header a,
+div#footer a {
+color: #fff;
+}
+
+/* this doesnt look as nice, but takes less space */
+div#menu_vert ul li,
+div#menu_horiz ul li {
+display:inline;
+}
+
+/* small border at the bottom to have some indicator */
+div#menu_vert ul,
+div#menu_horiz ul {
+border-bottom:1px solid #fff;
+}
+
+/* save some space */
+div.breadcrumbs {
+display:none;
+}
+/* Stylesheet: Handheld Modified On 2006-07-25 21:22:32 */
