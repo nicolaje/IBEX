@@ -1,0 +1,15 @@
+language: cpp
+
+compiler:
+	- gcc
+
+before_script:
+	- cd ../
+	- wget http://soplex.zib.de/download/soplex-1.7.2.tgz
+	- tar xzf soplex-1.7.2.tgz
+	- cd soplex-1.7.2
+	- make ZLIB=false
+	- cd ../IBEX
+	- ./waf configure
+
+script:	sudo ./waf install
